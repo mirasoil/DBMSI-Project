@@ -16,6 +16,21 @@
         <div class="form-group text-center">
             <label class="h2" style="color: white">Create Database</label><br/>
             <hr>
+            <?php 
+            if(isset($_GET['result'])) {
+              $result = $_GET['result'];
+              if($result == "success") {
+              ?>
+              <span class="alert alert-success" role="alert" style="width: 30%">
+                Database created successfully!
+              </span>
+              <br>
+              <br>
+              <?php
+              }
+            }
+            ?>
+            
             <input type="text" name="DBname" id="DBname" class="d-flex justify-content-center" style="width: 30%" placeholder="Database Name">
         </div>
           <button type="submit" name="btnCreate" class="btn btn-success mb-2">Submit</button>

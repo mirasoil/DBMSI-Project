@@ -27,6 +27,6 @@ if( isset($_POST['btnCreate']))
         $root->insertBefore($database, $root->firstChild);
 
         $xmldoc->save('../Catalog.xml');
-
     }
+    header('Location: ../Client/createDatabase.php?result=success');
 }

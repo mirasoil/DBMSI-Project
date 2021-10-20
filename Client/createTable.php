@@ -16,6 +16,20 @@
         <div class="form-group text-center">
             <label class="h2" style="color: white">Create Table</label><br/>
             <hr>
+            <?php 
+            if(isset($_GET['result'])) {
+              $result = $_GET['result'];
+              if($result == "success") {
+              ?>
+              <span class="alert alert-success" role="alert" style="width: 30%">
+                Table created successfully!
+              </span>
+              <br>
+              <br>
+              <?php
+              }
+            }
+            ?>
             <input type="text" name="tableName" id="tableName" class="d-flex justify-content-center" style="width: 30%" placeholder="Table Name"><br /> <br />
             <input type="text" name="currentDB" id="currentDB" class="d-flex justify-content-center" style="width: 30%" placeholder="Database Name"><br /><hr>
             <input type="text" class="d-flex justify-content-center" style="width: 30%" placeholder="Attribute Name"> <br />

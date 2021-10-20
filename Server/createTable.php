@@ -74,9 +74,7 @@ function createTable() {
                 $xmldoc->save('../Catalog.xml');
             }
         }
-        
-
     }
-    
+    header('Location: ../Client/createTable.php?result=success');
     
 }
