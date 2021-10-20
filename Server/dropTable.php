@@ -28,6 +28,7 @@ function dropTable() {
 
         echo $doc->saveXML(); 
     }
+    //header('Location: ../Client/dropTable.php?result=success');
     
 }
 

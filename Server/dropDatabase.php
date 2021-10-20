@@ -28,5 +28,6 @@ function dropDatabase() {
         echo $doc->saveXML();
         $doc->save('../Catalog.xml');
     }
+    header('Location: ../Client/dropDatabase.php?result=success');
  
 }
