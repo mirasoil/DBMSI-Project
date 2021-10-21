@@ -1,33 +1,27 @@
 <?php
+if( isset($_POST['dropBtn']))
+{
+    $dbname = $_POST['DBname'];
+    //echo '<p>'.$dbname.'</p>';
 
-function dropDatabase() {
+    $doc = new DOMDocument;
+    $doc->load('../Catalog.xml');
 
-    if( isset($_POST['dropBtn']))
-    {
-        $dbname = $_POST['DBname'];
-        echo '<p>'.$dbname.'</p>';
-
-        $doc = new DOMDocument;
-        $doc->load('../Catalog.xml');
-
-        $node = $doc->documentElement;
+    $node = $doc->documentElement;
 
 
-        $tags = $node->getElementsByTagName('DataBase');
-        foreach($tags as $tag){
-            $databaseName = $tag->getAttribute("dataBaseName");
-            echo $databaseName;
-           if($databaseName == $dbname) {
-                $oldtag = $node->removeChild($tag);
-           } else {
-               echo "This db does not exist!";
-           }
+    $tags = $node->getElementsByTagName('DataBase');
+    foreach($tags as $tag){
+        $databaseName = $tag->getAttribute("dataBaseName");
+        //echo $databaseName;
+        if($databaseName == $dbname) {
+            $oldtag = $node->removeChild($tag);
         }
-        echo "<br><pre>"; print_r($tag); "</pre>";
-
-        echo $doc->saveXML();
-        $doc->save('../Catalog.xml');
     }
-    header('Location: ../Client/dropDatabase.php?result=success');
- 
+    //echo "<br><pre>"; print_r($tag); "</pre>";
+
+    //echo $doc->saveXML();
+    $doc->save('../Catalog.xml');
 }
+header('Location: ../Client/dropDatabase.php?result=success');
+exit;

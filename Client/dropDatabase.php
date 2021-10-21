@@ -11,7 +11,7 @@
 </head>
 <body  style="background-image: url('https://mdbootstrap.com/img/new/fluid/nature/015.jpg')">
 
-  <form action="../Server/script.php" class="text-center" method="post">
+  <form action="../Server/dropDatabase.php" class="text-center" method="post">
         
         <div class="form-group text-center">
             <label class="h2" style="color: white">Drop Database</label><br/>

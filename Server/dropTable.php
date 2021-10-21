@@ -1,36 +1,63 @@
 <?php
 
-function dropTable() {
-    if( isset($_POST['dropTableBtn'])) {
-        $doc = new DOMDocument; 
-        $doc->load('../Catalog.xml');
+if( isset($_POST['dropTableBtn']))
+{
+    $tblname = $_POST['dropTableName'];
+    //echo '<p>'.$tblname.'</p>';
 
-        $tblname = $_POST['dropTableName'];
+    $doc = new DOMDocument;
+    $doc->load('../Catalog.xml');
 
-        $thedocument = $doc->documentElement;
+    $node = $doc->documentElement;
 
-        //this gives you a list of the messages
-        $list = $thedocument->getElementsByTagName('Table');
 
-        //figure out which ones you want -- assign it to a variable (ie: $nodeToRemove )
-        $nodeToRemove = null;
-        foreach ($list as $domElement){
-        $attrValue = $domElement->getAttribute('tableName');
-        if ($attrValue == $tblname) {
-            $nodeToRemove = $domElement; //will only remember last one- but this is just an example :)
-            echo "<br><pre>"; print_r($nodeToRemove); "</pre>";
+    $tags = $node->getElementsByTagName('Table');
+    foreach($tags as $tag){
+        $tableName = $tag->getAttribute("tableName");
+        echo $tableName;
+        if($tableName == $tblname) {
+            // $oldtag = $node->removeChild($tag);
+            $oldtag =  $tag->getAttribute("tableName");
+            echo '<br>Old tag: '.$oldtag;
         }
-        }
-        echo "<br><pre>"; print_r($nodeToRemove); "</pre>";
-        //Now remove it.
-        if ($nodeToRemove != null)
-        $thedocument->removeChild($nodeToRemove);
-
-        echo $doc->saveXML(); 
     }
-    //header('Location: ../Client/dropTable.php?result=success');
-    
+    //echo "<br><pre>"; print_r($tag); "</pre>";
+
+    //echo $doc->saveXML();
+    $doc->save('../Catalog.xml');
 }
+
+// function dropTable() {
+//     if( isset($_POST['dropTableBtn'])) {
+//         $doc = new DOMDocument; 
+//         $doc->load('../Catalog.xml');
+
+//         $tblname = $_POST['dropTableName'];
+
+//         $thedocument = $doc->documentElement;
+
+//         //this gives you a list of the messages
+//         $list = $thedocument->getElementsByTagName('Table');
+
+//         //figure out which ones you want -- assign it to a variable (ie: $nodeToRemove )
+//         $nodeToRemove = null;
+//         foreach ($list as $domElement){
+//         $attrValue = $domElement->getAttribute('tableName');
+//         if ($attrValue == $tblname) {
+//             $nodeToRemove = $domElement; //will only remember last one- but this is just an example :)
+//             echo "<br><pre>"; print_r($nodeToRemove); "</pre>";
+//         }
+//         }
+//         echo "<br><pre>"; print_r($nodeToRemove); "</pre>";
+//         //Now remove it.
+//         if ($nodeToRemove != null)
+//         $thedocument->removeChild($nodeToRemove);
+
+//         echo $doc->saveXML(); 
+//     }
+//     //header('Location: ../Client/dropTable.php?result=success');
+    
+// }
 
 
 // function dropTable() {
