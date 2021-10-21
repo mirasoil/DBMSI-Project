@@ -47,6 +47,6 @@
         </div>
           <button type="submit" class="btn btn-success mb-2" name="btnCreateTable">Submit</button>
     </form>
-    <button type="submit" class="btn btn-primary btn-lg" onclick="window.location.href='index.html'">Back</button>
+    <button type="submit" class="btn btn-primary btn-lg" onclick="window.location.href='index.php'">Back</button>
 </body>
 </html>

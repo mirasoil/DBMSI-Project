@@ -1,6 +1,4 @@
 <?php
-require_once('../Server/createRoot.php');
-createRootElement();
 
 if( isset($_POST['btnCreate']))
     {
