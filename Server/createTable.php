@@ -8,6 +8,17 @@ if( isset($_POST['btnCreateTable']))
     $currentDB = $_POST['currentDB'];
     //echo '<p>'.$currentDB.'</p>';
 
+    $attributeNameValue = $_POST['attributeName'];
+
+    $isnullValue = $_POST['isnullValue'];
+
+    $uniqueKeyValue = $_POST['uniqueKeyValue'];
+
+    $primaryKeyValue = $_POST['primaryKeyValue'];
+
+    $lengthValue = $_POST['lengthInput'];
+    $typeValue = $_POST['dataType'];
+
     $xmldoc = new DomDocument();
 
     //get the xml file
@@ -52,6 +63,28 @@ if( isset($_POST['btnCreateTable']))
             $tblName->value = $tableName;
             $table->appendChild($tblName);
 
+            $structure = $xmldoc->createElement('Structure');
+            $table->appendChild($structure);
+
+            $attribute = $xmldoc->createElement('Attribute');
+            $structure->appendChild($attribute);
+            
+            $isnull = $xmldoc->createAttribute('isnull');
+            $isnull->value = $isnull->value = ($isnullValue == 'on') ? 0 : 1;
+            $attribute->appendChild($isnull);
+
+            $length = $xmldoc->createAttribute('length');
+            $length->value = $lengthValue;
+            $attribute->appendChild($length);
+
+            $type = $xmldoc->createAttribute('type');
+            $type->value = $typeValue;
+            $attribute->appendChild($type);
+
+            $attributeName = $xmldoc->createAttribute('attributeName');
+            $attributeName->value = $attributeNameValue;
+            $attribute->appendChild($attributeName);
+
             $xmldoc->save('../Catalog.xml');
         } else {
             $tables = $xmldoc->getElementsByTagName('Tables')->item($i);
@@ -69,6 +102,28 @@ if( isset($_POST['btnCreateTable']))
             $tblName = $xmldoc->createAttribute("tableName");
             $tblName->value = $tableName;
             $table->appendChild($tblName);
+
+            $structure = $xmldoc->createElement('Structure');
+            $table->appendChild($structure);
+
+            $attribute = $xmldoc->createElement('Attribute');
+            $structure->appendChild($attribute);
+
+            $isnull = $xmldoc->createAttribute('isnull');
+            $isnull->value = $isnull->value = ($isnullValue == 'on') ? 0 : 1;
+            $attribute->appendChild($isnull);
+
+            $length = $xmldoc->createAttribute('length');
+            $length->value = $lengthValue;
+            $attribute->appendChild($length);
+
+            $type = $xmldoc->createAttribute('type');
+            $type->value = $typeValue;
+            $attribute->appendChild($type);
+
+            $attributeName = $xmldoc->createAttribute('attributeName');
+            $attributeName->value = $attributeNameValue;
+            $attribute->appendChild($attributeName);
 
             $xmldoc->save('../Catalog.xml');
         }

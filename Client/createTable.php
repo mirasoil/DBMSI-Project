@@ -32,17 +32,23 @@
             ?>
             <input type="text" name="tableName" id="tableName" class="d-flex justify-content-center" style="width: 30%" placeholder="Table Name"><br /> <br />
             <input type="text" name="currentDB" id="currentDB" class="d-flex justify-content-center" style="width: 30%" placeholder="Database Name"><br /><hr>
-            <input type="text" class="d-flex justify-content-center" style="width: 30%" placeholder="Attribute Name"> <br />
+            <input type="text" name="attributeName" class="d-flex justify-content-center" style="width: 30%" placeholder="Attribute Name"> <br />
             <label class="h4" style="color: white">Data Type</label>
             <select id="dataType" name="dataType">
-                <option value="primatyKey">int</option>
-                <option value="foreignKey">varchar(50)</option>
+                <option value="integer">int</option>
+                <option value="varchar">varchar</option>
             </select><br />
-            <input type="checkbox" class="form-check-input ">
+            <label class="h4" style="color: white">Length</label>
+            <select id="lengthInput" name="lengthInput">
+                <option value="3">3</option>
+                <option value="20">20</option>
+                <option value="50">50</option>
+            </select><br />
+            <input type="checkbox" name="primaryKeyValue" class="form-check-input ">
             <label class="form-check-label h4"  style="color: white">Primary Key</label><br />
-            <input type="checkbox" class="form-check-input">
+            <input type="checkbox" name="uniqueKeyValue" class="form-check-input">
             <label class="form-check-label h4" style="color: white">Unique Key</label><br />
-            <input type="checkbox" class="form-check-input">
+            <input type="checkbox" name="isnullValue" class="form-check-input">
             <label class="form-check-label h4" style="color: white">Allow Null</label>
         </div>
           <button type="submit" class="btn btn-success mb-2" name="btnCreateTable">Submit</button>
