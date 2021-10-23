@@ -21,14 +21,29 @@
               $result = $_GET['result'];
               if($result == "success") {
               ?>
-              <span class="alert alert-danger" role="alert" style="width: 30%">
+              <span class="alert alert-success" role="alert" style="width: 30%">
                 Table dropped out!
               </span>
               <br>
               <br>
               <?php
+              } else if($result == "faildData") {?>
+              <span class="alert alert-danger" role="alert" style="width: 30%">
+              The database does not exist!
+              </span>
+              <br>
+              <br>
+              <?php
+
+            }else if($result == "faildTable") {?>
+            <span class="alert alert-danger" role="alert" style="width: 30%">
+            The table does not exist!
+              </span>
+              <br>
+              <br>
+              <?php
               }
-            }
+          }
             ?>
             <input type="text" name="dropTableName" class="d-flex justify-content-center" style="width: 30%" placeholder="Table Name"> <br/><br/>
             <input type="text" name="dropTableDBname" class="d-flex justify-content-center" style="width: 30%" placeholder="Database Name">

@@ -1,2 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Databases><DataBase dataBaseName="db2"/><DataBase dataBaseName="db1"><Tables/></DataBase><DataBase dataBaseName="db"><Tables/></DataBase></Databases>
+<Databases><DataBase dataBaseName="db"><Tables><Table rowLength="114" fileName="fileName" tableName="tabel"><Structure><Attribute isnull="0" length="3" type="integer" attributeName=""/></Structure><primaryKey><pkAttribute/></primaryKey><foreignKeys><foreignKey><fkAttribute/><references><refTable/><refAttribute/></references></foreignKey></foreignKeys><uniqueKeys><UniqueAttribute/></uniqueKeys><IndexFiles><IndexFile indexType="" isUnique="0" keyLength="" indexName=""><IndexAttributes><IAttribute/></IndexAttributes></IndexFile></IndexFiles></Table></Tables></DataBase></Databases>

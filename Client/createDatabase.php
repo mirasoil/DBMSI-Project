@@ -27,6 +27,12 @@
               <br>
               <br>
               <?php
+              } else if($result == "faild"){?>
+                <span class="alert alert-danger" role="alert" style="width: 30%">
+                The database already exists!
+              </span>
+              <br>
+              <br><?php
               }
             }
             ?>

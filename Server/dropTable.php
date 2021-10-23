@@ -24,6 +24,8 @@ if( isset($_POST['dropTableBtn']))
         }
         
     }
+    if($db !== null){
+
     foreach($tags1 as $tag1)
     {
         $tabelName = $tag1->getAttribute("tableName");
@@ -34,7 +36,13 @@ if( isset($_POST['dropTableBtn']))
             $parent = $tag1->parentNode;
             $parent->removeChild($tag1); 
 
+        } else {
+            header('Location: ../Client/dropTable.php?result=faildTable');
+            exit;
         }
+    }} else {
+        header('Location: ../Client/dropTable.php?result=faildData');
+        exit;
     }
     // echo 'tabelname: '.$tblname.'</br />';
     // echo 'db: '.$db.'<br/>';

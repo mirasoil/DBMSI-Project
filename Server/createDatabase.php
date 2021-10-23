@@ -6,7 +6,7 @@ if( isset($_POST['btnCreate']))
         //echo '<p>'.$dbname.'</p>';
 
         $xmldoc = new DomDocument();
-
+        
         //get the xml file
         $xml = file_get_contents( '../Catalog.xml');
         $xmldoc->loadXML( $xml, LIBXML_NOBLANKS );
@@ -14,8 +14,22 @@ if( isset($_POST['btnCreate']))
         //get the root
         $root = $xmldoc->getElementsByTagName('Databases')->item(0);
        // echo "<pre>"; print_r($root); "</pre>";
-        
-        //verify if there is a database tag already in the xml file
+        $node = $xmldoc->documentElement;
+        $tags = $node->getElementsByTagName('DataBase');
+        $db= null;
+        foreach($tags as $tag)
+        {
+           $databaseName = $tag->getAttribute("dataBaseName");
+           if($databaseName == $dbname){
+               $db=$databaseName;
+               echo $db;
+               break;
+           }  
+       }
+       if($db === null)
+       {
+
+             //verify if there is a database tag already in the xml file
         //$db = file_exists("");
         
         //create database tag
@@ -27,6 +41,14 @@ if( isset($_POST['btnCreate']))
         $root->insertBefore($database, $root->firstChild);
 
         $xmldoc->save('../Catalog.xml');
+
+        header('Location: ../Client/createDatabase.php?result=success');
+        exit;
+       }
+       else {
+        header('Location: ../Client/createDatabase.php?result=faild');
+        exit;
+       }
+       
     }
-    header('Location: ../Client/createDatabase.php?result=success');
-    exit;
+    

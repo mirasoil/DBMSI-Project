@@ -21,14 +21,21 @@
               $result = $_GET['result'];
               if($result == "success") {
               ?>
-              <span class="alert alert-danger" role="alert" style="width: 30%">
+              <span class="alert alert-success" role="alert" style="width: 30%">
                 Database dropped out!
               </span>
               <br>
               <br>
               <?php
               }
-            }
+             else if($result == "faild") {
+              ?>
+               <span class="alert alert-danger" role="alert" style="width: 30%">
+               The database does not exist!
+              </span>
+              <br>
+              <br><?php
+            }}
             ?>
             <input type="text" name="DBname" class="d-flex justify-content-center" style="width: 30%" placeholder="Database Name">
         </div>
