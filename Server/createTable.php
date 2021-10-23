@@ -3,31 +3,22 @@
 if( isset($_POST['btnCreateTable']))
 {
     $tableName = $_POST['tableName'];
-    //echo '<p>'.$tableName.'</p>';
-
     $currentDB = $_POST['currentDB'];
-    //echo '<p>'.$currentDB.'</p>';
-
     $attributeNameValue = $_POST['attributeName'];
-
     $isnullValue = $_POST['isnullValue'];
-
     $primaryKeyValue = $_POST['primaryKeyValue'];
-
     $foreignKeyValue = $_POST['foreignKeyValue'];
     $refTableValue = $_POST['refTableValue'];
     $refAttrValue = $_POST['refAttrValue'];
     $uAttrValue = $_POST['uAttrValue'];
-
     $indexTypeValue = $_POST['indexTypeValue'];
     $indexIsUniqueValue = $_POST['isUniqueValue'];
     $indexKeyLengthValue = $_POST['indexKeyLengthValue'];
     $indexNameValue = $_POST['indexNameValue'];
     $IAttributeValue = $_POST['IAttributeValue'];
-
     $lengthValue = $_POST['lengthInput'];
     $typeValue = $_POST['dataType'];
-
+    
     $xmldoc = new DomDocument();
 
     //get the xml file
