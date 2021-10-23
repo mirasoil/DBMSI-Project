@@ -1,65 +1,63 @@
 <?php
 
-function dropTable() {
-
-    if( isset($_POST['dropTableBtn']))
-    {
-        $dbname = $_POST['dropTableDBname'];
-        $tblname = $_POST['dropTableName'];
-        echo '<p>'.$dbname.'</p><br>';
-        echo '<p>'.$tblname.'</p><br>';
-
-        $doc = new DOMDocument;
-        $doc->load('../Catalog.xml');
-
-        $node = $doc->documentElement;
-
-
-        $tags = $node->getElementsByTagName('DataBase');
-        $tags1 = $node->getElementsByTagName('Tables');
-        foreach($tags as $tag){
-            $databaseName = $tag->getAttribute("dataBaseName");
-            echo $databaseName;
-            if($databaseName == $dbname){
-                $db=$databaseName;
-                break;
-                
-            }
-            foreach($tags1 as $tag){
-                $tabelName = $tag->getAttribute("tableName");
-                echo $tabelName;
-                $xpath = new DOMXPath($tabelName);
-           if($tabelName == $tblname && $xpath->query("parent::*")== $db) {
-                $oldtag = $node->removeChild($tag);
-           }}
-        }
-        echo "<br><pre>"; print_r($tag); "</pre>";
 if( isset($_POST['dropTableBtn']))
-{
-    $tblname = $_POST['dropTableName'];
-    //echo '<p>'.$tblname.'</p>';
+ {
+     $tblname = $_POST['dropTableName'];
+     echo '<p>'.$tblname.'</p>';
+     $dbname = $_POST['dropTableDBname'];
 
-    $doc = new DOMDocument;
-    $doc->load('../Catalog.xml');
+     $doc = new DOMDocument;
+     $doc->load('../Catalog.xml');
 
-    $node = $doc->documentElement;
+     $node = $doc->documentElement;
+     $tags = $node->getElementsByTagName('DataBase');
+     $tags1 = $node->getElementsByTagName('Tables');
 
-
-    $tags = $node->getElementsByTagName('Table');
-    foreach($tags as $tag){
-        $tableName = $tag->getAttribute("tableName");
-        echo $tableName;
-        if($tableName == $tblname) {
-            // $oldtag = $node->removeChild($tag);
-            $oldtag =  $tag->getAttribute("tableName");
-            echo '<br>Old tag: '.$oldtag;
+     foreach($tags as $tag)
+     {
+        $databaseName = $tag->getAttribute("dataBaseName");
+        echo $databaseName;
+        if($databaseName == $dbname){
+            $db=$databaseName;
         }
+        if($db)
+        { break;}
     }
-    //echo "<br><pre>"; print_r($tag); "</pre>";
+    foreach($tags1 as $tag)
+    {
+        $tabelName = $tag->getAttribute("tableName");
+        echo $tabelName;
+        $xpath = new DOMXPath($tabelName);
+        if($tabelName == $tblname && $databaseName == $db) {
+            $oldtag = $node->removeChild($tag);
+        }
+    }}
+// if( isset($_POST['dropTableBtn']))
+// {
+//     $tblname = $_POST['dropTableName'];
+//     //echo '<p>'.$tblname.'</p>';
 
-    //echo $doc->saveXML();
-    $doc->save('../Catalog.xml');
-}
+//     $doc = new DOMDocument;
+//     $doc->load('../Catalog.xml');
+
+//     $node = $doc->documentElement;
+
+
+//     $tags = $node->getElementsByTagName('Table');
+    // foreach($tags as $tag){
+    //     $tableName = $tag->getAttribute("tableName");
+    //     echo $tableName;
+    //     if($tableName == $tblname) {
+    //         // $oldtag = $node->removeChild($tag);
+    //         $oldtag =  $tag->getAttribute("tableName");
+    //         echo '<br>Old tag: '.$oldtag;
+    //     }
+    // }
+//     //echo "<br><pre>"; print_r($tag); "</pre>";
+
+//     //echo $doc->saveXML();
+//     $doc->save('../Catalog.xml');
+// }
 
 // function dropTable() {
 //     if( isset($_POST['dropTableBtn'])) {
