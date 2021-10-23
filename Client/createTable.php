@@ -48,9 +48,21 @@
                 <option value="3">3</option>
                 <option value="20">20</option>
                 <option value="50">50</option>
-            </select><br />
-            <input type="checkbox" name="isnullValue" class="form-check-input">
-            <label class="form-check-label h4" style="color: white">Allow Null</label>
+            </select><br /><br />
+            <label class="h4" style="color: white">Allow Null</label>
+            <select id="isnullValue" name="isnullValue">
+                <option value="0">0</option>
+                <option value="1">1</option>
+            </select><br /><br />
+            <input type="text" name="indexTypeValue" class="d-flex justify-content-center" style="width: 30%" placeholder="Index Type"><br /> <br />
+            <label class="h4" style="color: white">Is Unique</label>
+            <select id="isUniqueValue" name="isUniqueValue">
+                <option value="0">0</option>
+                <option value="1">1</option>
+            </select><br /><br />
+            <input type="number" name="indexKeyLengthValue" class="d-flex justify-content-center" style="width: 30%" placeholder="Key Length"><br /> <br />
+            <input type="text" name="indexNameValue" class="d-flex justify-content-center" style="width: 30%" placeholder="Index Name"><br /> <br />
+            <input type="text" name="IAttributeValue" class="d-flex justify-content-center" style="width: 30%" placeholder="Index Attribute Value"><br /> <br />
         </div>
           <button type="submit" class="btn btn-success mb-2" name="btnCreateTable">Submit</button>
     </form>
