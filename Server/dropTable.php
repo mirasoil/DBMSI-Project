@@ -16,14 +16,22 @@ function dropTable() {
 
 
         $tags = $node->getElementsByTagName('DataBase');
+        $tags1 = $node->getElementsByTagName('Tables');
         foreach($tags as $tag){
             $databaseName = $tag->getAttribute("dataBaseName");
             echo $databaseName;
-           if($databaseName == $dbname) {
+            if($databaseName == $dbname){
+                $db=$databaseName;
+                break;
+                
+            }
+            foreach($tags1 as $tag){
+                $tabelName = $tag->getAttribute("tableName");
+                echo $tabelName;
+                $xpath = new DOMXPath($tabelName);
+           if($tabelName == $tblname && $xpath->query("parent::*")== $db) {
                 $oldtag = $node->removeChild($tag);
-           } else {
-               echo "This db does not exist!";
-           }
+           }}
         }
         echo "<br><pre>"; print_r($tag); "</pre>";
 
