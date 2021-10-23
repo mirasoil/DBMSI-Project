@@ -16,6 +16,11 @@ if( isset($_POST['btnCreateTable']))
 
     $primaryKeyValue = $_POST['primaryKeyValue'];
 
+    $foreignKeyValue = $_POST['foreignKeyValue'];
+    $refTableValue = $_POST['refTableValue'];
+    $refAttrValue = $_POST['refAttrValue'];
+    $uAttrValue = $_POST['uAttrValue'];
+
     $lengthValue = $_POST['lengthInput'];
     $typeValue = $_POST['dataType'];
 
@@ -85,6 +90,33 @@ if( isset($_POST['btnCreateTable']))
             $attributeName->value = $attributeNameValue;
             $attribute->appendChild($attributeName);
 
+            $prKey = $xmldoc->createElement('primaryKey');
+            $table->appendChild($prKey);
+
+            $prKeyAttr = $xmldoc->createElement('pkAttribute', $primaryKeyValue);
+            $prKey->appendChild($prKeyAttr);
+
+            $fKeys = $xmldoc->createElement('foreignKeys');
+            $table->appendChild($fKeys);
+
+            $fKey = $xmldoc->createElement('foreignKey');
+            $fKeys->appendChild($fKey);
+
+            $fKeyAttr = $xmldoc->createElement('fkAttribute', $foreignKeyValue);
+            $fKey->appendChild($fKeyAttr);
+
+            $references = $xmldoc->createElement('references');
+            $fKey->appendChild($references);
+            $refTable = $xmldoc->createElement('refTable', $refTableValue);
+            $references->appendChild($refTable);
+            $refAttr = $xmldoc->createElement('refAttribute', $refAttrValue);
+            $references->appendChild($refAttr);
+
+            $uKeys = $xmldoc->createElement('uniqueKeys');
+            $table->appendChild($uKeys);
+            $uAttr = $xmldoc->createElement('UniqueAttribute', $uAttrValue);
+            $uKeys->appendChild($uAttr);
+
             $xmldoc->save('../Catalog.xml');
         } else {
             $tables = $xmldoc->getElementsByTagName('Tables')->item($i);
@@ -124,6 +156,33 @@ if( isset($_POST['btnCreateTable']))
             $attributeName = $xmldoc->createAttribute('attributeName');
             $attributeName->value = $attributeNameValue;
             $attribute->appendChild($attributeName);
+
+            $prKey = $xmldoc->createElement('primaryKey');
+            $table->appendChild($prKey);
+
+            $prKeyAttr = $xmldoc->createElement('pkAttribute', $primaryKeyValue);
+            $prKey->appendChild($prKeyAttr);
+
+            $fKeys = $xmldoc->createElement('foreignKeys');
+            $table->appendChild($fKeys);
+
+            $fKey = $xmldoc->createElement('foreignKey');
+            $fKeys->appendChild($fKey);
+
+            $fKeyAttr = $xmldoc->createElement('fkAttribute', $foreignKeyValue);
+            $fKey->appendChild($fKeyAttr);
+
+            $references = $xmldoc->createElement('references');
+            $fKey->appendChild($references);
+            $refTable = $xmldoc->createElement('refTable', $refTableValue);
+            $references->appendChild($refTable);
+            $refAttr = $xmldoc->createElement('refAttribute', $refAttrValue);
+            $references->appendChild($refAttr);
+
+            $uKeys = $xmldoc->createElement('uniqueKeys');
+            $table->appendChild($uKeys);
+            $uAttr = $xmldoc->createElement('UniqueAttribute', $uAttrValue);
+            $uKeys->appendChild($uAttr);
 
             $xmldoc->save('../Catalog.xml');
         }

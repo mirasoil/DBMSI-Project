@@ -32,7 +32,12 @@
             ?>
             <input type="text" name="tableName" id="tableName" class="d-flex justify-content-center" style="width: 30%" placeholder="Table Name"><br /> <br />
             <input type="text" name="currentDB" id="currentDB" class="d-flex justify-content-center" style="width: 30%" placeholder="Database Name"><br /><hr>
-            <input type="text" name="attributeName" class="d-flex justify-content-center" style="width: 30%" placeholder="Attribute Name"> <br />
+            <input type="text" name="attributeName" class="d-flex justify-content-center" style="width: 30%" placeholder="Attribute Name"> <br /><br />
+            <input type="text" name="primaryKeyValue" class="d-flex justify-content-center" style="width: 30%" placeholder="Primary Key (Optional)"><br /> <br />
+            <input type="text" name="foreignKeyValue" class="d-flex justify-content-center" style="width: 30%" placeholder="Foreign Key (Optional)"><br /> <br />
+            <input type="text" name="refTableValue" class="d-flex justify-content-center" style="width: 30%" placeholder="Referenced table"><br /> <br />
+            <input type="text" name="refAttrValue" class="d-flex justify-content-center" style="width: 30%" placeholder="Referenced attribute"><br /> <br />
+            <input type="text" name="uAttrValue" class="d-flex justify-content-center" style="width: 30%" placeholder="Unique Key"><br /> <br />
             <label class="h4" style="color: white">Data Type</label>
             <select id="dataType" name="dataType">
                 <option value="integer">int</option>
@@ -44,10 +49,6 @@
                 <option value="20">20</option>
                 <option value="50">50</option>
             </select><br />
-            <input type="checkbox" name="primaryKeyValue" class="form-check-input ">
-            <label class="form-check-label h4"  style="color: white">Primary Key</label><br />
-            <input type="checkbox" name="uniqueKeyValue" class="form-check-input">
-            <label class="form-check-label h4" style="color: white">Unique Key</label><br />
             <input type="checkbox" name="isnullValue" class="form-check-input">
             <label class="form-check-label h4" style="color: white">Allow Null</label>
         </div>
