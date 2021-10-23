@@ -1,9 +1,9 @@
 <?php
-function createDatabase(){
+
 if( isset($_POST['btnCreate']))
     {
         $dbname = $_POST['DBname'];
-        echo '<p>'.$dbname.'</p>';
+        //echo '<p>'.$dbname.'</p>';
 
         $xmldoc = new DomDocument();
 
@@ -13,7 +13,7 @@ if( isset($_POST['btnCreate']))
 
         //get the root
         $root = $xmldoc->getElementsByTagName('Databases')->item(0);
-        echo "<pre>"; print_r($root); "</pre>";
+       // echo "<pre>"; print_r($root); "</pre>";
         
         //verify if there is a database tag already in the xml file
         //$db = file_exists("");
@@ -27,6 +27,6 @@ if( isset($_POST['btnCreate']))
         $root->insertBefore($database, $root->firstChild);
 
         $xmldoc->save('../Catalog.xml');
-
     }
-}
+    header('Location: ../Client/createDatabase.php?result=success');
+    exit;

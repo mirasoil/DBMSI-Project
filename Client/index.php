@@ -1,5 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
+<?php
+require_once('../Server/createRoot.php');
+createRootElement();
+?>
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -16,12 +20,12 @@
     <hr/>
     <br/>
       <div class="col-md-12 text-center" style="margin-bottom: 30px">
-      <button type="button" class="btn btn-info btn-lg" onclick="window.location.href='createDatabase.html'">Create Database</button>
-      <button type="button" class="btn btn-info btn-lg"onclick="window.location.href='createTable.html'">Create Table</button>
+      <button type="button" class="btn btn-info btn-lg" onclick="window.location.href='createDatabase.php'">Create Database</button>
+      <button type="button" class="btn btn-info btn-lg"onclick="window.location.href='createTable.php'">Create Table</button>
     </div>
     <div class="col-md-12 text-center">
-      <button type="button" class="btn btn-secondary btn-lg" onclick="window.location.href='dropDatabase.html'">Drop Database</button>
-      <button type="button" class="btn btn-secondary btn-lg" onclick="window.location.href='dropTable.html'">Drop Table</button>
+      <button type="button" class="btn btn-secondary btn-lg" onclick="window.location.href='dropDatabase.php'">Drop Database</button>
+      <button type="button" class="btn btn-secondary btn-lg" onclick="window.location.href='dropTable.php'">Drop Table</button>
     </div>
 
 </body>

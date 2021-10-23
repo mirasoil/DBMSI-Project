@@ -11,15 +11,29 @@
 </head>
 <body  style="background-image: url('https://mdbootstrap.com/img/new/fluid/nature/015.jpg')">
 
-  <form action="../Server/script.php" class="text-center" method="post">
+  <form action="../Server/dropDatabase.php" class="text-center" method="post">
         
         <div class="form-group text-center">
             <label class="h2" style="color: white">Drop Database</label><br/>
             <hr>
+            <?php 
+            if(isset($_GET['result'])) {
+              $result = $_GET['result'];
+              if($result == "success") {
+              ?>
+              <span class="alert alert-danger" role="alert" style="width: 30%">
+                Database dropped out!
+              </span>
+              <br>
+              <br>
+              <?php
+              }
+            }
+            ?>
             <input type="text" name="DBname" class="d-flex justify-content-center" style="width: 30%" placeholder="Database Name">
         </div>
           <button type="submit" name="dropBtn" class="btn btn-success mb-2 ">Submit</button>
     </form>
-    <button type="submit" class="btn btn-primary btn-lg" onclick="window.location.href='index.html'">Back</button>
+    <button type="submit" class="btn btn-primary btn-lg" onclick="window.location.href='index.php'">Back</button>
 </body>
 </html>
