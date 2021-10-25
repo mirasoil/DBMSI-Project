@@ -27,9 +27,15 @@
               <br>
               <br>
               <?php
-              } else if($result == "failed"){?>
+              } else if($result == "failedDB"){?>
                 <span class="alert alert-danger" role="alert" style="width: 30%">
-                  The database or table already exists!
+                  This database does not exist yet! Try another one or create it first!
+                </span>
+              <br>
+              <br><?php
+              } else if($result == "failedTable"){?>
+                <span class="alert alert-danger" role="alert" style="width: 30%">
+                  This table already exists! Try using another name!
                 </span>
               <br>
               <br><?php
