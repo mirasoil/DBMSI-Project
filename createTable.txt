@@ -54,6 +54,9 @@ if( isset($_POST['btnCreateTable']))
             }
         }  
     }
+    var_dump($checkdb);
+    var_dump($checktable); //not able to add a table which already exists in another database!!!!!
+    //we should look for table tags only in the specific database!!! - line 46
 
     if($checktable == null || $checkdb == null) {
         //if no database or table with the same name were found we can insert
@@ -61,10 +64,10 @@ if( isset($_POST['btnCreateTable']))
         while($currentDB != $xpath->query("/Databases/DataBase/@dataBaseName")->item($i)->value) {
             $i++;
         }
-        // echo 'i este: '.$i;
+        echo 'i este: '.$i;
         $dbname = $xpath->query("/Databases/DataBase/@dataBaseName")->item($i);   //we don't know how many dbs we have
-        // echo "<pre>"; print_r($dbname); "</pre>";
-        // echo $dbname->value;
+        echo "<pre>"; print_r($dbname); "</pre>";
+        echo $dbname->value;
     
         //add table to the specific database
         if($currentDB == $dbname->value){
@@ -74,15 +77,16 @@ if( isset($_POST['btnCreateTable']))
     
             //check if the tables tag already exists
             // $validation =  $xmldoc->getElementsByTagName('Tables')->item($i);
-            // echo '<br/>database este <pre>'; print_r($database);'</pre><br/>';
+            echo '<br/>database este <pre>'; print_r($database);'</pre><br/>';
             $validation =  $xpath->query('/Databases/DataBase[@dataBaseName=\''.$currentDB.'\']/Tables');
-            // echo "<pre>Validare "; print_r($validation); "</pre>";
+            echo "<pre>Validare "; print_r($validation); "</pre>";
             if($validation->length == 0) {
                 $tables = $xmldoc->createElement('Tables');
                 $database->appendChild($tables);
             } else {
                 $tables = $xpath->query('/Databases/DataBase[@dataBaseName=\''.$currentDB.'\']/Tables')[0];
-                // echo "<pre>tables este "; print_r($tables); "</pre>";
+                echo '<br/> am intrat<br/>';
+                echo "<pre>tables este "; print_r($tables); "</pre>";
             }
             $table = $xmldoc->createElement('Table');
             $tables->appendChild($table);
@@ -178,11 +182,21 @@ if( isset($_POST['btnCreateTable']))
     
         } 
     } else {
-        header('Location: ../Client/createTable.php?result=failed');
-        exit;
-        // echo 'error';
+        // header('Location: ../Client/createTable.php?result=failed');
+        // exit;
+        echo 'error';
     }
 
+    // $nodes = $xpath->query("//DataBase[@dataBaseName='db2']");
+
+    // $nodeNames = array();
+    // foreach( $nodes as $node )
+    // {
+    //     $nodeNames[ $node->nodeName ] = $node->nodeName;
+    // }
+
+    // var_dump( $nodeNames );
+
 }
-header('Location: ../Client/createTable.php?result=success');
-exit;
+// header('Location: ../Client/createTable.php?result=success');
+// exit;
