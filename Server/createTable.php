@@ -77,10 +77,9 @@ if( isset($_POST['btnCreateTable']))
                 //echo "<pre>"; print_r($database); "</pre>";
         
                 //check if the tables tag already exists
-                // $validation =  $xmldoc->getElementsByTagName('Tables')->item($i);
-                // echo '<br/>database este <pre>'; print_r($database);'</pre><br/>';
                 $validation =  $xpath->query('/Databases/DataBase[@dataBaseName=\''.$currentDB.'\']/Tables');
                 // echo "<pre>Validare "; print_r($validation); "</pre>";
+                
                 if($validation->length == 0) {
                     $tables = $xmldoc->createElement('Tables');
                     $database->appendChild($tables);
@@ -124,6 +123,7 @@ if( isset($_POST['btnCreateTable']))
                 $attributeName->value = $attributeNameValue;
                 $attribute->appendChild($attributeName);
         
+                //there is no need to verify since here we only create the table ???
                 $prKey = $xmldoc->createElement('primaryKey');
                 $table->appendChild($prKey);
         
@@ -139,55 +139,76 @@ if( isset($_POST['btnCreateTable']))
                 $fKeyAttr = $xmldoc->createElement('fkAttribute', $foreignKeyValue);
                 $fKey->appendChild($fKeyAttr);
         
-                $references = $xmldoc->createElement('references');
-                $fKey->appendChild($references);
-                $refTable = $xmldoc->createElement('refTable', $refTableValue);
-                $references->appendChild($refTable);
-                $refAttr = $xmldoc->createElement('refAttribute', $refAttrValue);
-                $references->appendChild($refAttr);
-        
-                $uKeys = $xmldoc->createElement('uniqueKeys');
-                $table->appendChild($uKeys);
-                $uAttr = $xmldoc->createElement('UniqueAttribute', $uAttrValue);
-                $uKeys->appendChild($uAttr);
-        
-                $indexFiles = $xmldoc->createElement('IndexFiles');
-                $table->appendChild($indexFiles);
-                $indexFile = $xmldoc->createElement('IndexFile');
-                $indexFiles->appendChild($indexFile);
-        
-                $indexType = $xmldoc->createAttribute('indexType');
-                $indexType->value = $indexTypeValue;
-                $indexFile->appendChild($indexType);
-        
-                $indexIsUnique = $xmldoc->createAttribute('isUnique');
-                $indexIsUnique->value = $indexIsUniqueValue;
-                $indexFile->appendChild($indexIsUnique);
-        
-                $indexKeyLength = $xmldoc->createAttribute('keyLength');
-                $indexKeyLength->value = $indexKeyLengthValue;
-                $indexFile->appendChild($indexKeyLength);
-        
-                $indexName = $xmldoc->createAttribute('indexName');
-                $indexName->value = $indexNameValue;
-                $indexFile->appendChild($indexName);
-        
-                $indexAttributes = $xmldoc->createElement('IndexAttributes');
-                $indexFile->appendChild($indexAttributes);
-        
-                $iAttribute = $xmldoc->createElement('IAttribute', $IAttributeValue);
-                $indexAttributes->appendChild($iAttribute);
-        
-                $xmldoc->save('../Catalog.xml');
-        
+                //verify if the referenced table exists
+                $tableNamesValidation = $xpath->query('/Databases/DataBase[@dataBaseName=\''.$currentDB.'\']/Tables/Table[@tableName=\''.$refTableValue.'\']');
+                // echo "<pre>"; print_r($tableNamesValidation); "</pre>";
+
+                if($tableNamesValidation->length != 0) {
+                    $references = $xmldoc->createElement('references');
+                    $fKey->appendChild($references);
+
+                    //verify if the referenced attribute exists in the referenced table
+                    $refAttrValidation = $xpath->query('/Databases/DataBase[@dataBaseName=\''.$currentDB.'\']/Tables/Table[@tableName=\''.$refTableValue.'\']/Structure/Attribute[@attributeName=\''.$refAttrValue.'\']');
+                    // echo "<pre>"; print_r($refAttrValidation); "</pre>";
+                    
+                    if($refAttrValidation->length != 0) {
+                        $refTable = $xmldoc->createElement('refTable', $refTableValue);
+                        $references->appendChild($refTable);
+                        
+                        $refAttr = $xmldoc->createElement('refAttribute', $refAttrValue);
+                        $references->appendChild($refAttr);
+                
+                        $uKeys = $xmldoc->createElement('uniqueKeys');
+                        $table->appendChild($uKeys);
+                        $uAttr = $xmldoc->createElement('UniqueAttribute', $uAttrValue);
+                        $uKeys->appendChild($uAttr);
+                
+                        $indexFiles = $xmldoc->createElement('IndexFiles');
+                        $table->appendChild($indexFiles);
+                        $indexFile = $xmldoc->createElement('IndexFile');
+                        $indexFiles->appendChild($indexFile);
+                
+                        $indexType = $xmldoc->createAttribute('indexType');
+                        $indexType->value = $indexTypeValue;
+                        $indexFile->appendChild($indexType);
+                
+                        $indexIsUnique = $xmldoc->createAttribute('isUnique');
+                        $indexIsUnique->value = $indexIsUniqueValue;
+                        $indexFile->appendChild($indexIsUnique);
+                
+                        $indexKeyLength = $xmldoc->createAttribute('keyLength');
+                        $indexKeyLength->value = $indexKeyLengthValue;
+                        $indexFile->appendChild($indexKeyLength);
+                
+                        $indexName = $xmldoc->createAttribute('indexName');
+                        $indexName->value = $indexNameValue;
+                        $indexFile->appendChild($indexName);
+                
+                        $indexAttributes = $xmldoc->createElement('IndexAttributes');
+                        $indexFile->appendChild($indexAttributes);
+                
+                        $iAttribute = $xmldoc->createElement('IAttribute', $IAttributeValue);
+                        $indexAttributes->appendChild($iAttribute);
+                
+                        $xmldoc->save('../Catalog.xml');
+                    } else {
+                        header('Location: ../Client/createTable.php?result=failedRefAttr');
+                        exit;
+                        // echo 'no such attribute in this table';
+                    }
+
+                } else {
+                    header('Location: ../Client/createTable.php?result=failedRefTable');
+                    exit;
+                    // echo 'no such table';
+                }
             } 
         } else {
             header('Location: ../Client/createTable.php?result=failedTable');
             exit;
-            // echo 'error';
+            echo 'error';
         }
     }
-
 }
 header('Location: ../Client/createTable.php?result=success');
 exit;

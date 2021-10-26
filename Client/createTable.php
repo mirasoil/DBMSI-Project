@@ -27,15 +27,28 @@
               <br>
               <br>
               <?php
-              } else if($result == "failedDB"){?>
+              } else if($result == "failedDB") { ?>
                 <span class="alert alert-danger" role="alert" style="width: 30%">
                   This database does not exist yet! Try another one or create it first!
                 </span>
               <br>
               <br><?php
-              } else if($result == "failedTable"){?>
+              } else if($result == "failedTable") { ?>
                 <span class="alert alert-danger" role="alert" style="width: 30%">
                   This table already exists! Try using another name!
+                </span>
+              <br>
+              <br><?php
+              }
+              else if($result == "failedRefTable") { ?>
+                <span class="alert alert-danger" role="alert" style="width: 30%">
+                  The referenced table does not exist in this database !
+                </span>
+              <br>
+              <br><?php
+              } else if($result == "failedRefAttr") { ?>
+                <span class="alert alert-danger" role="alert" style="width: 30%">
+                  The referenced attribute does not exist in the referenced table !
                 </span>
               <br>
               <br><?php
