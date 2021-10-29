@@ -55,14 +55,14 @@
               }
             }
             ?>
-            <input type="text" name="tableName" id="tableName" class="d-flex justify-content-center" style="width: 30%" placeholder="Table Name"><br /> <br />
-            <input type="text" name="currentDB" id="currentDB" class="d-flex justify-content-center" style="width: 30%" placeholder="Database Name"><br /><hr>
+            <input type="text" name="tableName" id="tableName" class="d-flex justify-content-center" style="width: 30%" placeholder="Table Name" required><br /> <br />
+            <input type="text" name="currentDB" id="currentDB" class="d-flex justify-content-center" style="width: 30%" placeholder="Database Name" required><br /><hr>
             <input type="text" name="attributeName" class="d-flex justify-content-center" style="width: 30%" placeholder="Attribute Name"> <br /><br />
-            <input type="text" name="primaryKeyValue" class="d-flex justify-content-center" style="width: 30%" placeholder="Primary Key (Optional)"><br /> <br />
+            <input type="text" name="primaryKeyValue" class="d-flex justify-content-center" style="width: 30%" placeholder="Primary Key" required><br /> <br />
             <input type="text" name="foreignKeyValue" class="d-flex justify-content-center" style="width: 30%" placeholder="Foreign Key (Optional)"><br /> <br />
-            <input type="text" name="refTableValue" class="d-flex justify-content-center" style="width: 30%" placeholder="Referenced table"><br /> <br />
-            <input type="text" name="refAttrValue" class="d-flex justify-content-center" style="width: 30%" placeholder="Referenced attribute"><br /> <br />
-            <input type="text" name="uAttrValue" class="d-flex justify-content-center" style="width: 30%" placeholder="Unique Key"><br /> <br />
+            <input type="text" name="refTableValue" class="d-flex justify-content-center" style="width: 30%" placeholder="Referenced table (Optional)"><br /> <br />
+            <input type="text" name="refAttrValue" class="d-flex justify-content-center" style="width: 30%" placeholder="Referenced attribute (Optional)"><br /> <br />
+            <input type="text" name="uAttrValue" class="d-flex justify-content-center" style="width: 30%" placeholder="Unique Key (Optional)"><br /> <br />
             <label class="h4" style="color: white">Data Type</label>
             <select id="dataType" name="dataType">
                 <option value="integer">int</option>

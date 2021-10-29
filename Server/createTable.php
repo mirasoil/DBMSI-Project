@@ -123,27 +123,31 @@ if( isset($_POST['btnCreateTable']))
                 $attributeName->value = $attributeNameValue;
                 $attribute->appendChild($attributeName);
         
-                //there is no need to verify since here we only create the table ???
-                $prKey = $xmldoc->createElement('primaryKey');
-                $table->appendChild($prKey);
+                //only if user entered a primary key
+                if(! empty($primaryKeyValue)) {
+                    $prKey = $xmldoc->createElement('primaryKey');
+                    $table->appendChild($prKey); 
+
+                    $prKeyAttr = $xmldoc->createElement('pkAttribute', $primaryKeyValue);
+                    $prKey->appendChild($prKeyAttr);
+                }
         
-                $prKeyAttr = $xmldoc->createElement('pkAttribute', $primaryKeyValue);
-                $prKey->appendChild($prKeyAttr);
-        
-                $fKeys = $xmldoc->createElement('foreignKeys');
-                $table->appendChild($fKeys);
-        
-                $fKey = $xmldoc->createElement('foreignKey');
-                $fKeys->appendChild($fKey);
-        
-                $fKeyAttr = $xmldoc->createElement('fkAttribute', $foreignKeyValue);
-                $fKey->appendChild($fKeyAttr);
+                if(! empty($foreignKeyValue)) {
+                    $fKeys = $xmldoc->createElement('foreignKeys');
+                    $table->appendChild($fKeys);
+            
+                    $fKey = $xmldoc->createElement('foreignKey');
+                    $fKeys->appendChild($fKey);
+            
+                    $fKeyAttr = $xmldoc->createElement('fkAttribute', $foreignKeyValue);
+                    $fKey->appendChild($fKeyAttr);
+                }
         
                 //verify if the referenced table exists
                 $tableNamesValidation = $xpath->query('/Databases/DataBase[@dataBaseName=\''.$currentDB.'\']/Tables/Table[@tableName=\''.$refTableValue.'\']');
                 // echo "<pre>"; print_r($tableNamesValidation); "</pre>";
 
-                if($tableNamesValidation->length != 0) {
+                if($tableNamesValidation->length != 0) { //means we have a table in our db with required name
                     $references = $xmldoc->createElement('references');
                     $fKey->appendChild($references);
 
@@ -158,11 +162,59 @@ if( isset($_POST['btnCreateTable']))
                         $refAttr = $xmldoc->createElement('refAttribute', $refAttrValue);
                         $references->appendChild($refAttr);
                 
+                        if(! empty($uAttrValue)) {
+                            $uKeys = $xmldoc->createElement('uniqueKeys');
+                            $table->appendChild($uKeys);
+                            $uAttr = $xmldoc->createElement('UniqueAttribute', $uAttrValue);
+                            $uKeys->appendChild($uAttr);
+                        }
+                
+                        if(! empty($indexTypeValue)) {
+                            $indexFiles = $xmldoc->createElement('IndexFiles');
+                            $table->appendChild($indexFiles);
+                            $indexFile = $xmldoc->createElement('IndexFile');
+                            $indexFiles->appendChild($indexFile);
+                    
+                            $indexType = $xmldoc->createAttribute('indexType');
+                            $indexType->value = $indexTypeValue;
+                            $indexFile->appendChild($indexType);
+                    
+                            $indexIsUnique = $xmldoc->createAttribute('isUnique');
+                            $indexIsUnique->value = $indexIsUniqueValue;
+                            $indexFile->appendChild($indexIsUnique);
+                    
+                            $indexKeyLength = $xmldoc->createAttribute('keyLength');
+                            $indexKeyLength->value = $indexKeyLengthValue;
+                            $indexFile->appendChild($indexKeyLength);
+                    
+                            $indexName = $xmldoc->createAttribute('indexName');
+                            $indexName->value = $indexNameValue;
+                            $indexFile->appendChild($indexName);
+                    
+                            $indexAttributes = $xmldoc->createElement('IndexAttributes');
+                            $indexFile->appendChild($indexAttributes);
+                    
+                            $iAttribute = $xmldoc->createElement('IAttribute', $IAttributeValue);
+                            $indexAttributes->appendChild($iAttribute);
+                        }
+                
+                        $xmldoc->save('../Catalog.xml');
+                    } else {
+                        header('Location: ../Client/createTable.php?result=failedRefAttr');
+                        exit;
+                        // echo 'no such attribute in this table';
+                    }
+
+                } else if($refTableValue == null) {  
+                //if user didn't insert any referenced table we skip the step of creating one 
+                    if(! empty($uAttrValue)) {  //only create unique key tag if any value inserted
                         $uKeys = $xmldoc->createElement('uniqueKeys');
                         $table->appendChild($uKeys);
                         $uAttr = $xmldoc->createElement('UniqueAttribute', $uAttrValue);
                         $uKeys->appendChild($uAttr);
-                
+                    }
+            
+                    if(! empty($indexTypeValue)) {  //only create index file tag if any value inserted
                         $indexFiles = $xmldoc->createElement('IndexFiles');
                         $table->appendChild($indexFiles);
                         $indexFile = $xmldoc->createElement('IndexFile');
@@ -189,14 +241,9 @@ if( isset($_POST['btnCreateTable']))
                 
                         $iAttribute = $xmldoc->createElement('IAttribute', $IAttributeValue);
                         $indexAttributes->appendChild($iAttribute);
-                
-                        $xmldoc->save('../Catalog.xml');
-                    } else {
-                        header('Location: ../Client/createTable.php?result=failedRefAttr');
-                        exit;
-                        // echo 'no such attribute in this table';
                     }
-
+            
+                    $xmldoc->save('../Catalog.xml');
                 } else {
                     header('Location: ../Client/createTable.php?result=failedRefTable');
                     exit;
@@ -206,7 +253,7 @@ if( isset($_POST['btnCreateTable']))
         } else {
             header('Location: ../Client/createTable.php?result=failedTable');
             exit;
-            echo 'error';
+            // echo 'error';
         }
     }
 }
