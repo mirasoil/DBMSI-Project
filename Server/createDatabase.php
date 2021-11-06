@@ -1,4 +1,5 @@
 <?php
+require '../vendor/autoload.php';
 
 if( isset($_POST['btnCreate']))
     {
@@ -41,6 +42,28 @@ if( isset($_POST['btnCreate']))
         $root->insertBefore($database, $root->firstChild);
 
         $xmldoc->save('../Catalog.xml');
+//                    // Creating Connection  
+// $con = new MongoDB\Client("mongodb://localhost:27017");  
+// // Creating Database  
+// $db = $con->$dbname;  
+// //Creating Document  
+// $collection = $db->employee;  
+// // // Insering Record  
+// // $collection->insertOne( [ 'name' =>'Peter', 'email' =>'peter@abc.com' ] );  
+// // // Fetching Record  
+// // $record = $collection->find( [ 'name' =>'Peter'] );  
+// // foreach ($record as $employe) {  
+// // echo $employe['name'], ': ', $employe['email']."<br>";  
+// // }  
+
+$m = new MongoDB\Client("mongodb://localhost:27017"); 
+// echo "Connection to database successfully";
+ 
+// select a database
+$db = $m->$dbname;
+// echo "Database mydb selected";
+// $collection = $db->createCollection("mycol");
+// echo "Collection created succsessfully";
 
         header('Location: ../Client/createDatabase.php?result=success');
         exit;
