@@ -27,6 +27,10 @@ createRootElement();
       <button type="button" class="btn btn-secondary btn-lg" onclick="window.location.href='dropDatabase.php'">Drop Database</button>
       <button type="button" class="btn btn-secondary btn-lg" onclick="window.location.href='dropTable.php'">Drop Table</button>
     </div>
+    <div class="col-md-12 text-center">
+      <button type="button" class="btn btn-secondary btn-lg" onclick="window.location.href='insertRecords.php'">Insert</button>
+      <button type="button" class="btn btn-secondary btn-lg" onclick="window.location.href='deleteRecords.php'">Delete</button>
+    </div>
 
 </body>
 </html>
