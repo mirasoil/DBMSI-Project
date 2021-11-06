@@ -1,11 +1,11 @@
 <?php
-
+ require '../Client/createDatabase.php';
 if( isset($_POST['btnCreateTable']))
 {
     $tableName = $_POST['tableName'];
     $currentDB = $_POST['currentDB'];
-    $attributeNameValue = $_POST['attributeName'];
-    $isnullValue = $_POST['isnullValue'];
+    $attributeNameValues[] = $_POST['attributeName'];
+    $isnullValue[] = $_POST['isnullValue'];
     $primaryKeyValue = $_POST['primaryKeyValue'];
     $foreignKeyValue = $_POST['foreignKeyValue'];
     $refTableValue = $_POST['refTableValue'];
@@ -16,8 +16,8 @@ if( isset($_POST['btnCreateTable']))
     $indexKeyLengthValue = $_POST['indexKeyLengthValue'];
     $indexNameValue = $_POST['indexNameValue'];
     $IAttributeValue = $_POST['IAttributeValue'];
-    $lengthValue = $_POST['lengthInput'];
-    $typeValue = $_POST['dataType'];
+    $lengthValue[] = $_POST['lengthInput'];
+    $typeValue[] = $_POST['dataType'];
     
     $xmldoc = new DomDocument();
 
@@ -103,26 +103,28 @@ if( isset($_POST['btnCreateTable']))
         
                 $structure = $xmldoc->createElement('Structure');
                 $table->appendChild($structure);
-        
-                $attribute = $xmldoc->createElement('Attribute');
-                $structure->appendChild($attribute);
-                
-                $isnull = $xmldoc->createAttribute('isnull');
-                $isnull->value = $isnullValue;
-                $attribute->appendChild($isnull);
-        
-                $length = $xmldoc->createAttribute('length');
-                $length->value = $lengthValue;
-                $attribute->appendChild($length);
-        
-                $type = $xmldoc->createAttribute('type');
-                $type->value = $typeValue;
-                $attribute->appendChild($type);
-        
-                $attributeName = $xmldoc->createAttribute('attributeName');
-                $attributeName->value = $attributeNameValue;
-                $attribute->appendChild($attributeName);
-        
+
+                for($i = 0; $i < count($attributeNameValue); $i++)
+                { 
+                    $attribute = $xmldoc->createElement('Attribute');
+                    $structure->appendChild($attribute);
+                    
+                    $isnull = $xmldoc->createAttribute('isnull');
+                    $isnull->value = $isnullValue[$i];
+                    $attribute->appendChild($isnull);
+            
+                    $length = $xmldoc->createAttribute('length');
+                    $length->value = $lengthValue[$i];
+                    $attribute->appendChild($length);
+            
+                    $type = $xmldoc->createAttribute('type');
+                    $type->value = $typeValue[$i];
+                    $attribute->appendChild($type);
+            
+                    $attributeName = $xmldoc->createAttribute('attributeName');
+                    $attributeName->value = $attributeNameValue[$i];
+                    $attribute->appendChild($attributeName);
+               }
                 //only if user entered a primary key
                 if(! empty($primaryKeyValue)) {
                     $prKey = $xmldoc->createElement('primaryKey');
@@ -242,7 +244,7 @@ if( isset($_POST['btnCreateTable']))
                         $iAttribute = $xmldoc->createElement('IAttribute', $IAttributeValue);
                         $indexAttributes->appendChild($iAttribute);
                     }
-            
+                    
                     $xmldoc->save('../Catalog.xml');
                 } else {
                     header('Location: ../Client/createTable.php?result=failedRefTable');
