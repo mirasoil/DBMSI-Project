@@ -11,9 +11,9 @@
 </head>
 <body  style="background-image: url('https://mdbootstrap.com/img/new/fluid/nature/015.jpg')">
 
-    <form action="../Server/delete.php" class="text-center" method="post">
-        
-        <div class="form-group text-center">
+
+<div class="form-group text-center">
+            <form action="" class="text-center" method="">
             <label class="h2" style="color: white">Delete Record by ID</label><br/>
             <hr>
             <?php 
@@ -45,11 +45,32 @@
               }
           }
             ?>
-            <input type="text" name="deleteTableName" class="d-flex justify-content-center" style="width: 30%" placeholder="Table Name"> <br/><br/>
-            <input type="text" name="deleteColumnName" class="d-flex justify-content-center" style="width: 30%" placeholder="ID">
-        </div>
-          <button type="submit" name="dropTableBtn"  class="btn btn-success mb-2 ">Submit</button>
-    </form>
+            <input type="text" name="deleteDBName" id="deleteDBName" class="d-flex justify-content-center" style="width: 30%" placeholder="Database Name" required> <br/><br/>
+            <input type="text" name="deleteTableName" id="deleteTableName" class="d-flex justify-content-center" style="width: 30%" placeholder="Table Name" required> <br/><br/>
+            <input type="text" name="deleteRecordID" id="deleteRecordID" class="d-flex justify-content-center" style="width: 30%" placeholder="ID" required> <br/><br/>
+        </form>
+        <button type="submit" name="deleteRecordBtn" id="deleteRecordBtn" class="btn btn-success mb-2 ">Submit</button>
+    </div>
     <button type="submit" class="btn btn-primary btn-lg" onclick="window.location.href='index.php'">Back</button>
 </body>
 </html>
+<script>
+    $('#deleteRecordBtn').click(function() {
+        let dbname = $('#deleteDBName').val();
+        let tablename = $('#deleteTableName').val();
+        let recordID = $('#deleteRecordID').val();
+
+        $.ajax({
+            url: "../Server/delete.php?dbname="+dbname+"&tablename="+tablename+"",
+            method: "POST",
+            data: {deleteRecordID: recordID},
+            success: function(data) {
+                if (data == 'success') {
+                    alert('Successfully deleted record! Check mongoDB for further details');
+                } else {
+                    alert('There was a problem, please try again');
+                }
+            }
+        });
+    });
+</script>

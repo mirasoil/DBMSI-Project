@@ -30,8 +30,8 @@ if($number > 0)
 
             $manager = new MongoDB\Driver\Manager('mongodb://localhost:27017');
 
-            $db = 'dbmsiproject';  //aici numele bazei de date tot din FE
-            $coll = 'test';  //numele colectiei tot din FE
+            $db = $_GET['dbname'];  //aici numele bazei de date tot din FE
+            $coll = $_GET['tablename'];  //numele colectiei tot din FE
 
             $result = $manager->executeBulkWrite($db.'.'.$coll, $bulk);
           }  

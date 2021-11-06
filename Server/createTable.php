@@ -4,8 +4,6 @@ if( isset($_POST['btnCreateTable']))
 {
     $tableName = $_POST['tableName'];
     $currentDB = $_POST['currentDB'];
-    $attributeNameValues[] = $_POST['attributeName'];
-    $isnullValue[] = $_POST['isnullValue'];
     $primaryKeyValue = $_POST['primaryKeyValue'];
     $foreignKeyValue = $_POST['foreignKeyValue'];
     $refTableValue = $_POST['refTableValue'];
@@ -16,8 +14,6 @@ if( isset($_POST['btnCreateTable']))
     $indexKeyLengthValue = $_POST['indexKeyLengthValue'];
     $indexNameValue = $_POST['indexNameValue'];
     $IAttributeValue = $_POST['IAttributeValue'];
-    $lengthValue[] = $_POST['lengthInput'];
-    $typeValue[] = $_POST['dataType'];
     
     $xmldoc = new DomDocument();
 
@@ -65,27 +61,21 @@ if( isset($_POST['btnCreateTable']))
             while($currentDB != $xpath->query("/Databases/DataBase/@dataBaseName")->item($i)->value) {
                 $i++;
             }
-            // echo 'i este: '.$i;
+
             $dbname = $xpath->query("/Databases/DataBase/@dataBaseName")->item($i);   //we don't know how many dbs we have
-            // echo "<pre>"; print_r($dbname); "</pre>";
-            // echo $dbname->value;
         
             //add table to the specific database
             if($currentDB == $dbname->value){
                 $database = $xpath->query("/Databases/DataBase[@dataBaseName=\"".$currentDB."\"]")[0];
-                //$database = $database1->getAttribute('tableName');
-                //echo "<pre>"; print_r($database); "</pre>";
         
                 //check if the tables tag already exists
                 $validation =  $xpath->query('/Databases/DataBase[@dataBaseName=\''.$currentDB.'\']/Tables');
-                // echo "<pre>Validare "; print_r($validation); "</pre>";
                 
                 if($validation->length == 0) {
                     $tables = $xmldoc->createElement('Tables');
                     $database->appendChild($tables);
                 } else {
                     $tables = $xpath->query('/Databases/DataBase[@dataBaseName=\''.$currentDB.'\']/Tables')[0];
-                    // echo "<pre>tables este "; print_r($tables); "</pre>";
                 }
                 $table = $xmldoc->createElement('Table');
                 $tables->appendChild($table);
@@ -149,7 +139,6 @@ if( isset($_POST['btnCreateTable']))
         
                 //verify if the referenced table exists
                 $tableNamesValidation = $xpath->query('/Databases/DataBase[@dataBaseName=\''.$currentDB.'\']/Tables/Table[@tableName=\''.$refTableValue.'\']');
-                // echo "<pre>"; print_r($tableNamesValidation); "</pre>";
 
                 if($tableNamesValidation->length != 0) { //means we have a table in our db with required name
                     $references = $xmldoc->createElement('references');
@@ -157,7 +146,6 @@ if( isset($_POST['btnCreateTable']))
 
                     //verify if the referenced attribute exists in the referenced table
                     $refAttrValidation = $xpath->query('/Databases/DataBase[@dataBaseName=\''.$currentDB.'\']/Tables/Table[@tableName=\''.$refTableValue.'\']/Structure/Attribute[@attributeName=\''.$refAttrValue.'\']');
-                    // echo "<pre>"; print_r($refAttrValidation); "</pre>";
                     
                     if($refAttrValidation->length != 0) {
                         $refTable = $xmldoc->createElement('refTable', $refTableValue);
@@ -206,7 +194,6 @@ if( isset($_POST['btnCreateTable']))
                     } else {
                         header('Location: ../Client/createTable.php?result=failedRefAttr');
                         exit;
-                        // echo 'no such attribute in this table';
                     }
 
                 } else if($refTableValue == null) {  
@@ -251,13 +238,11 @@ if( isset($_POST['btnCreateTable']))
                 } else {
                     header('Location: ../Client/createTable.php?result=failedRefTable');
                     exit;
-                    // echo 'no such table';
                 }
             } 
         } else {
             header('Location: ../Client/createTable.php?result=failedTable');
             exit;
-            // echo 'error';
         }
     }
 }

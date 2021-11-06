@@ -59,7 +59,7 @@
             <input type="text" name="currentDB" id="currentDB" class="d-flex justify-content-center" style="width: 30%" placeholder="Database Name" required><br /><hr>
             <div class="wrapper">
               <div class="input-box">
-                <input type="text" name="attributeNames[]" id="attributeNames[0]" class="d-flex justify-content-center" style="width: 30%" placeholder="Attribute1 Name"> <br /><br /><button class="btn add-btn">Add More</button> <br><br>
+                <input type="text" name="attributeNames[]" id="attributeNames[0]" class="d-flex justify-content-center" style="width: 30%" placeholder="Attribute1 Name"> <br /><br />
                 <label class="h4" style="color: white">Data Type</label>
                 <select id="dataType[0]" name="dataType[]" value="int">
                     <option value="integer">int</option>
@@ -72,10 +72,11 @@
                     <option value="50">50</option>
                 </select><br /><br />
                 <label class="h4" style="color: white">Allow Null</label>
-                <select id="isnullValue[0]" name="isnullValue[]" value="0">
+                <select id="isNullValue[0]" name="isNullValue[]" value="0">
                     <option value="0">0</option>
                     <option value="1">1</option>
                 </select><br /><br />
+                <button class="btn add-btn">Add More</button> <br><br>
               </div>
             </div>
             <input type="text" name="primaryKeyValue" class="d-flex justify-content-center" style="width: 30%" placeholder="Primary Key" required><br /> <br />
@@ -128,7 +129,7 @@
                     <option value="50">50</option>
                 </select><br /><br />
                 <label class="h4" style="color: white">Allow Null</label>
-                <select id="isnullValue[${x}]" name="isnullValue[]" value="0">
+                <select id="isNullValue[${x}]" name="isNullValue[]" value="0">
                     <option value="0">0</option>
                     <option value="1">1</option>
                 </select><br /><br />

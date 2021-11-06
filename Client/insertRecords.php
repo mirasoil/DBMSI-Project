@@ -97,8 +97,11 @@ $(document).ready(function() {
         });
     });
     $('#submit2').click(function() {
+        let dbname = $('#currentDB').val();
+        let tablename = $('#tableName').val();
+        console.log(tablename)
         $.ajax({
-            url: "../Server/insert.php",
+            url: "../Server/insert.php?dbname="+dbname+"&tablename="+tablename+"",
             method: "POST",
             data: $('#add_columns').serialize(),
             success: function(data) {
