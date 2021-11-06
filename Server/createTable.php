@@ -104,27 +104,29 @@ if( isset($_POST['btnCreateTable']))
                 $structure = $xmldoc->createElement('Structure');
                 $table->appendChild($structure);
 
-                for($i = 0; $i < count($attributeNameValue); $i++)
-                { 
-                    $attribute = $xmldoc->createElement('Attribute');
-                    $structure->appendChild($attribute);
-                    
-                    $isnull = $xmldoc->createAttribute('isnull');
-                    $isnull->value = $isnullValue[$i];
-                    $attribute->appendChild($isnull);
-            
-                    $length = $xmldoc->createAttribute('length');
-                    $length->value = $lengthValue[$i];
-                    $attribute->appendChild($length);
-            
-                    $type = $xmldoc->createAttribute('type');
-                    $type->value = $typeValue[$i];
-                    $attribute->appendChild($type);
-            
-                    $attributeName = $xmldoc->createAttribute('attributeName');
-                    $attributeName->value = $attributeNameValue[$i];
-                    $attribute->appendChild($attributeName);
-               }
+                if (isset($_POST["attributeNames"]) && is_array($_POST["attributeNames"])){ 
+                    for($i = 0; $i < count($_POST['attributeNames']); $i++) {
+                        $attribute = $xmldoc->createElement('Attribute');
+                        $structure->appendChild($attribute);
+                        
+                        $isnull = $xmldoc->createAttribute('isnull');
+                        // $checkForNull = ($_POST['isNullValue'][$i] == 'yes' ? 0 : 1);
+                        $isnull->value = $_POST['isNullValue'][$i];
+                        $attribute->appendChild($isnull);
+                
+                        $length = $xmldoc->createAttribute('length');
+                        $length->value = $_POST['lengthInput'][$i];
+                        $attribute->appendChild($length);
+                
+                        $type = $xmldoc->createAttribute('type');
+                        $type->value = $_POST['dataType'][$i];
+                        $attribute->appendChild($type);
+                
+                        $attributeName = $xmldoc->createAttribute('attributeName');
+                        $attributeName->value = $_POST['attributeNames'][$i];
+                        $attribute->appendChild($attributeName);
+                    }
+                }
                 //only if user entered a primary key
                 if(! empty($primaryKeyValue)) {
                     $prKey = $xmldoc->createElement('primaryKey');
