@@ -13,7 +13,7 @@
 
 
 <div class="form-group text-center">
-            <form action="" class="text-center" method="">
+            <form action="../Server/delete.php" class="text-center" method="post">
             <label class="h2" style="color: white">Delete Record by ID</label><br/>
             <hr>
             <?php 
@@ -42,19 +42,27 @@
               <br>
               <br>
               <?php
-              }
+              } else if($result == "faildId") {?>
+                <span class="alert alert-danger" role="alert" style="width: 30%">
+                The id does not exist!
+                  </span>
+                  <br>
+                  <br>
+                  <?php
+                  }
           }
             ?>
-            <input type="text" name="deleteDBName" id="deleteDBName" class="d-flex justify-content-center" style="width: 30%" placeholder="Database Name" required> <br/><br/>
-            <input type="text" name="deleteTableName" id="deleteTableName" class="d-flex justify-content-center" style="width: 30%" placeholder="Table Name" required> <br/><br/>
-            <input type="text" name="deleteRecordID" id="deleteRecordID" class="d-flex justify-content-center" style="width: 30%" placeholder="ID" required> <br/><br/>
-        </form>
-        <button type="submit" name="deleteRecordBtn" id="deleteRecordBtn" class="btn btn-success mb-2 ">Submit</button>
-    </div>
+            <input type="text" name="deleteTableDBname" class="d-flex justify-content-center" style="width: 30%" placeholder="Database Name"><br/><br/>
+            <input type="text" name="deleteTableName" class="d-flex justify-content-center" style="width: 30% " placeholder="Table Name"> <br/><br/>
+            <input type="text" name="deleteColumnName" class="d-flex justify-content-center" style="width: 30% " placeholder="ID"><br/><br/>
+            <button type="submit" name="dropTableBtn"  style=" text-align: center" class="btn btn-success mb-2 ">Submit</button>
+          </div>
+          
+    </form><br/>
     <button type="submit" class="btn btn-primary btn-lg" onclick="window.location.href='index.php'">Back</button>
 </body>
 </html>
-<script>
+<!-- <script>
     $('#deleteRecordBtn').click(function() {
         let dbname = $('#deleteDBName').val();
         let tablename = $('#deleteTableName').val();
@@ -73,4 +81,4 @@
             }
         });
     });
-</script>
+</script> -->
