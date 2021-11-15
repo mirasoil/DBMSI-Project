@@ -69,7 +69,20 @@ $tableName = $_POST['tableName'];
                         $allColumns[$colName] = $colType;
  
                     }
+
                     
+                    
+                }
+            }
+            //if any unique index is set, let the user know that
+            if($xpath->query('/Databases/DataBase[@dataBaseName=\''.$currentDB.'\']/Tables/Table[@tableName=\''.$tableName.'\']/uniqueKeys/UniqueAttribute/text()')->count()) {
+                $length = $xpath->query('/Databases/DataBase[@dataBaseName=\''.$currentDB.'\']/Tables/Table[@tableName=\''.$tableName.'\']/uniqueKeys/UniqueAttribute/text()')->count();
+                $i = 0;
+                $j = 1;
+                while($i<$length){
+                    $allColumns['uniqueKey'.$i] = $xpath->query('/Databases/DataBase[@dataBaseName=\''.$currentDB.'\']/Tables/Table[@tableName=\''.$tableName.'\']/uniqueKeys['.$j.']/UniqueAttribute/text()')->item(0)->textContent;
+                    $i++;
+                    $j++;
                 }
             }
             echo json_encode($allColumns);

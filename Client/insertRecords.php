@@ -83,13 +83,27 @@ $(document).ready(function() {
                     triggerError("noSuchTable");
                 } else {
                     var i = 1;
+                    var j = 0;
+                    var found = false;
+                    if(response.hasOwnProperty('uniqueKey0')) {
+                        found = true;
+                    }
                     $.each(response, function(key, val) {
-                        $('#dynamic_field').append('<tr id="row' + i +
-                            '"><td><p style="color: white;">Column name: ' + key +
-                            '</p><input type="text" name="col_name[]" placeholder="Type: ' +
-                            val + ' " class="form-control name_list" /></tr><br>'
-                        );
+                        if(!key.includes('uniqueKey')) {
+                            $('#dynamic_field').append('<tr id="row' + i +
+                                '"><td><p style="color: white;">Column name: ' + key +
+                                '</p><input type="text" name="col_name[]" placeholder="Type: ' +
+                                val + ' " class="form-control name_list" /></td></tr><br>'
+                            );
+                        }
                     });
+                    if(found == true) {
+                        while(response.hasOwnProperty('uniqueKey'+j)) {
+                            $('#dynamic_field').append(`<br><p class="p-tags-for-unique-index" style="color: white;font-size: 18px;">Unique Key: <span id='uniq${+j}'><b> ${response['uniqueKey'+j]} </b><span></p><br>`)
+                            j++
+                        }
+                        
+                    }
                     $('#submit').hide();
                     $('#submit2').show();
                 }
@@ -99,9 +113,16 @@ $(document).ready(function() {
     $('#submit2').click(function() {
         let dbname = $('#currentDB').val();
         let tablename = $('#tableName').val();
-        console.log(tablename)
+        let uniqueIndexes = '';
+        let i = 0;
+        while(i<document.querySelectorAll('.p-tags-for-unique-index').length){
+            uniqueIndexes += '&uniqueIndex[]='+$('#uniq'+i).text().split(" ").join("")
+            i++
+        }
+        // console.log(uniqueIndexes) 
+        // console.log(tablename)
         $.ajax({
-            url: "../Server/insert.php?dbname="+dbname+"&tablename="+tablename+"",
+            url: "../Server/insert.php?dbname="+dbname+"&tablename="+tablename+uniqueIndexes,
             method: "POST",
             data: $('#add_columns').serialize(),
             success: function(data) {
