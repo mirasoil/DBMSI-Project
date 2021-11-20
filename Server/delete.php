@@ -45,11 +45,6 @@ if( isset($_POST['dropTableBtn']))
     
             if($cursor)
            { 
-            // $con = new MongoDB\Client("mongodb://localhost:27017");
-            //$db = $con->$dbname;
-            // $delRec = $collection->deleteOne(
-            // [['_id' => $id ], ['limit' => 1]]
-            // );
             $bulk = new MongoDB\Driver\BulkWrite;
             $bulk->delete(['_id' => $id], ['limit' => 1]);
             $manager = new MongoDB\Driver\Manager('mongodb://localhost:27017');
