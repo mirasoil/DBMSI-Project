@@ -85,11 +85,17 @@ $(document).ready(function() {
                     var i = 1;
                     var j = 0;
                     var found = false;
+                    var foundFK = false;
+                    var i1 = 1;
+                    var j1 = 0;
                     if(response.hasOwnProperty('uniqueKey0')) {
                         found = true;
                     }
+                    if(response.hasOwnProperty('foreignKey0')) {
+                        foundFK = true;
+                    }
                     $.each(response, function(key, val) {
-                        if(!key.includes('uniqueKey')) {
+                        if(!key.includes('uniqueKey') && !key.includes('foreignKey')) {
                             $('#dynamic_field').append('<tr id="row' + i +
                                 '"><td><p style="color: white;">Column name: ' + key +
                                 '</p><input type="text" name="col_name[]" placeholder="Type: ' +
@@ -101,6 +107,13 @@ $(document).ready(function() {
                         while(response.hasOwnProperty('uniqueKey'+j)) {
                             $('#dynamic_field').append(`<br><p class="p-tags-for-unique-index" style="color: white;font-size: 18px;">Unique Key: <span id='uniq${+j}'><b> ${response['uniqueKey'+j]} </b><span></p><br>`)
                             j++
+                        }
+                        
+                    }
+                    if(foundFK == true) {
+                        while(response.hasOwnProperty('foreignKey'+j1)) {
+                            $('#dynamic_field').append(`<br><p class="p-tags-for-foreign-key" style="color: white;font-size: 18px;">Foreign Key: <span id='fk${+j1}'><b> ${response['foreignKey'+j1]} </b><span></p><br>`)
+                            j1++
                         }
                         
                     }

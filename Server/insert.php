@@ -6,7 +6,7 @@ require '../vendor/autoload.php';
 $number = count($_POST["col_name"]);  
 if($number > 0)  
 {  
-     for($i=1; $i<$number; $i++)  
+     for($i=1; $i<=$number; $i++)  
      {  
           if(trim($_POST["col_name"][$i] != ''))  
           {  
@@ -16,87 +16,79 @@ if($number > 0)
                $key = $_POST["col_name"][0];  //Always: first column is id
                $intKey = intval($key);
 
-               $value = ''.$_POST["col_name"][$i].'#'.$_POST["col_name"][$i+1];  //the rest of the columns values concatenated
-               // $document1 = [$key => $value];
-               $document2 = ['_id' => $intKey, 'value' => $value];
-               // $document3 = ['_id' => new MongoDB\BSON\ObjectId, 'title' => 'three'];
-
-               // $_id1 = $bulk->insert($document1);
-               $_id2 = $bulk->insert($document2);
-               // $_id3 = $bulk->insert($document3);
-
-               // var_dump($_id1, $_id2, $_id3);
-               var_dump($_id2);
+               //creating the concatenated value from the rest of the fields
+               $value = '';
+               $j = $number;
+               $index = 1;
+               while($j > 0 && $index < $number) {
+                    $value = $value.$_POST["col_name"][$index].'#'; 
+                    $j--;
+                    $index++;
+               }
+               
+               //prepare data for insert
+               $documentTable = ['_id' => $intKey, 'value' => $value];
+               
+               $idTable = $bulk->insert($documentTable);
 
                $manager = new MongoDB\Driver\Manager('mongodb://localhost:27017');
 
-               $db = $_GET['dbname'];  //aici numele bazei de date tot din FE
-               $coll = $_GET['tablename'];  //numele colectiei tot din FE
+               //Unique index
+               $db = $_GET['dbname'];  //user's choosed db
+               $coll = $_GET['tablename'];    //user's choosed collection
                
-               $result = $manager->executeBulkWrite($db.'.'.$coll, $bulk);
-
-               //UNIQUE index - it works but maybe we should do it with documents...
-               // $uniqueKeys = $_GET['uniqueIndex'];
-
-               // foreach ($uniqueKeys as $uniqueKey) {
-               //      # code...
-               //      $commandUniq = new MongoDB\Driver\Command([
-               //           "createIndexes" => $coll,
-               //           "indexes"       => [[
-               //           "name" => "customUniqueIndex",
-               //           "key"  => [ 'FirstName' => 1 ],
-               //           "ns"   => $db.'.'.$coll,
-               //           "unique" => true
-               //           ]],
-               //      ]);
-               //      $result1 = $manager->executeCommand($db, $commandUniq);
-               // }
 
                //Collection for Unique Index
-               $bulk1 = new MongoDB\Driver\BulkWrite;
-               $key1 = $_POST["col_name"][1];  //Always: first column is id
+               $bulkUniqueInd = new MongoDB\Driver\BulkWrite;
+               $keyUniqueInd = $_POST["col_name"][1];  //Always: first column is id
 
-               $value1 = $_POST["col_name"][0];
-               $intValue1 = intval($value1);
+               $valueUniqueInd = $_POST["col_name"][0];   //the id
 
-               $document3 = ['_id' => $key1, 'value' => $intValue1];
+               $documentUniqueInd = ['_id' => $keyUniqueInd, 'value' => $valueUniqueInd];
 
-               $_id3 = $bulk1->insert($document3);
+               $idUniqueInd = $bulkUniqueInd->insert($documentUniqueInd);
+ 
+               $collUniqueInd = $_GET['tablename'].'UniqueIndex'; 
 
-               $db1 = $_GET['dbname'];  //aici numele bazei de date tot din FE
-               $coll1 = $_GET['tablename'].'UniqueIndex';  //numele colectiei tot din FE
+               //if the is no unique key we insert the data
+               if($resultUniqueInd = $manager->executeBulkWrite($db.'.'.$collUniqueInd, $bulkUniqueInd)) {
 
-               $result2 = $manager->executeBulkWrite($db1.'.'.$coll1, $bulk1);
-
-
-               //NON-UNIQUE index - it works but maybe we should do it with documents...
-
-               // $commandNonUniq = new MongoDB\Driver\Command([
-               //      "createIndexes" => $coll,
-               //      "indexes"       => [[
-               //      "name" => "customNonUniqueIndex",
-               //      "key"  => [ 'LastName' => 1 ],  //LastName
-               //      "ns"   => $db.'.'.$coll,
-               //      ]],
-               // ]);
-               // $result3 = $manager->executeCommand($db, $commandNonUniq);
-
-
-               //Collection for Non Unique Index
-               $bulk2 = new MongoDB\Driver\BulkWrite;
-               $key2 = $_POST["col_name"][2];  
-
-               $value2 = $_POST["col_name"][0];
-               $intValue2 = intval($value2);
-
-               $document4 = ['_id' => $key2, 'value' => $intValue2];
-
-               $_id4 = $bulk2->insert($document4);
-
-               $coll2 = $_GET['tablename'].'NonUniqueIndex';  //numele colectiei tot din FE
-
-               $result4 = $manager->executeBulkWrite($db.'.'.$coll2, $bulk2);
-               
+                    //Collection for Non Unique Index
+                    $bulkNonUniq = new MongoDB\Driver\BulkWrite;
+                    $keyNonUniq = $_POST["col_name"][2];  //age
+     
+                    $valueNonUniq = $_POST["col_name"][0];  //id
+     
+                    $collNonUniq = $_GET['tablename'].'NonUniqueIndex';
+     
+                    $m = new MongoClient();
+                    $dbNonUniq = $m->selectDB($db);
+                    $collection = new MongoCollection($dbNonUniq, $collNonUniq);
+                    $item = $collection->find(array('_id' => $keyNonUniq));
+     
+                    $currentVal = $collection->findOne(array('_id' => $keyNonUniq), array('value'));
+                    
+                    if(!empty($item->count())) {
+                         $idUniqIndex = $bulkNonUniq->update(['_id' => $keyNonUniq], ['$set' => ['value' => $currentVal['value'].'#'.$valueNonUniq]]);
+     
+                         $resultUniqueIndex = $manager->executeBulkWrite($db.'.'.$collNonUniq, $bulkNonUniq);
+     
+                         //we insert in the table also
+                         $result = $manager->executeBulkWrite($db.'.'.$coll, $bulk);
+                    } else {
+                         $documentNonUniq = ['_id' => $keyNonUniq, 'value' => $valueNonUniq];
+     
+                         $_idNonUniq = $bulkNonUniq->insert($documentNonUniq);
+     
+                         $resultNonUniq = $manager->executeBulkWrite($db.'.'.$collNonUniq, $bulkNonUniq);
+     
+                         //we insert in the table also
+                         $result = $manager->executeBulkWrite($db.'.'.$coll, $bulk);
+                    }
+               } else {
+                    header('Location: ../Client/insertRecords.php?result=failedInsert');
+                    exit;
+               }              
           }  
      }  
      echo "Data Inserted";  

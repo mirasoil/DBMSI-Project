@@ -85,6 +85,17 @@ $tableName = $_POST['tableName'];
                     $j++;
                 }
             }
+            //if any foreign key is set, let the user know that
+            if($xpath->query('/Databases/DataBase[@dataBaseName=\''.$currentDB.'\']/Tables/Table[@tableName=\''.$tableName.'\']/foreignKeys/foreignKey/fkAttribute/text()')->count()) {
+                $length1 = $xpath->query('/Databases/DataBase[@dataBaseName=\''.$currentDB.'\']/Tables/Table[@tableName=\''.$tableName.'\']/foreignKeys/foreignKey/fkAttribute/text()')->count();
+                $i1 = 0;
+                $j1 = 1;
+                while($i1<$length1){
+                    $allColumns['foreignKey'.$i1] = $xpath->query('/Databases/DataBase[@dataBaseName=\''.$currentDB.'\']/Tables/Table[@tableName=\''.$tableName.'\']/foreignKeys/foreignKey/fkAttribute/text()')->item(0)->textContent;
+                    $i1++;
+                    $j1++;
+                }
+            }
             echo json_encode($allColumns);
         }
     }
