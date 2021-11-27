@@ -38,6 +38,7 @@ if($number > 0)
                $coll = $_GET['tablename'];    //user's choosed collection
                
 
+
                //Collection for Unique Index
                $bulkUniqueInd = new MongoDB\Driver\BulkWrite;
                $keyUniqueInd = $_POST["col_name"][1];  //Always: first column is id
@@ -50,8 +51,37 @@ if($number > 0)
  
                $collUniqueInd = $_GET['tablename'].'UniqueIndex'; 
 
+               $ok = 0;
+               $refTable = $_GET['refTable'];
+                    $m1 = new MongoClient();
+                    $dbRefTable = $m1->selectDB($db);
+                    $collectionRefTable = new MongoCollection($dbRefTable, $refTable);
+                    // $itemRefTable = $collectionRefTable->find(array('_id' => $_POST["col_name"][2]));
+                    
+                    if($collectionRefTable->findOne(array('_id' => intval($_POST["col_name"][2])))) {
+                         $itemRefTable = $collectionRefTable->findOne(array('_id' => intval($_POST["col_name"][2])));
+                         if(!empty($itemRefTable)) {
+
+                              $bulkFK = new MongoDB\Driver\BulkWrite;
+                              if($foreignKey = $_GET['foreignKey']) {
+                                   $collFK = $_GET['tablename'].'FK';
+          
+                                   $docFK = ['_id' => $_POST["col_name"][2], 'value' => $_POST["col_name"][0]];
+          
+                                   $idFK = $bulkFK->insert($docFK);
+          
+                                   $resultFK = $manager->executeBulkWrite($db.'.'.$collFK, $bulkFK);
+     
+                                   $ok = 1;
+                              }
+                         } 
+                    } else {
+                         header('Location: ../Client/insertRecords.php?result=failedNoSuchId');
+                         exit;
+                    }
+
                //if the is no unique key we insert the data
-               if($resultUniqueInd = $manager->executeBulkWrite($db.'.'.$collUniqueInd, $bulkUniqueInd)) {
+               if($resultUniqueInd = $manager->executeBulkWrite($db.'.'.$collUniqueInd, $bulkUniqueInd) && $ok == 1) {
 
                     //Collection for Non Unique Index
                     $bulkNonUniq = new MongoDB\Driver\BulkWrite;
@@ -86,27 +116,7 @@ if($number > 0)
                          $result = $manager->executeBulkWrite($db.'.'.$coll, $bulk);
                     }
 
-                    $refTable = $_GET['refTable'];
-                    $m1 = new MongoClient();
-                    $dbRefTable = $m1->selectDB($db);
-                    $collectionRefTable = new MongoCollection($dbRefTable, $refTable);
-                    $itemRefTable = $collectionRefTable->find(array('_id' => $_POST["col_name"][2]));
                     
-                    if(!empty($itemRefTable->count())) {
-                         $bulkFK = new MongoDB\Driver\BulkWrite;
-                         if($foreignKey = $_GET['foreignKey']) {
-                              $collFK = $_GET['tablename'].'FK';
-     
-                              $docFK = ['_id' => $_POST["col_name"][2], 'value' => $_POST["col_name"][0]];
-     
-                              $idFK = $bulkFK->insert($docFK);
-     
-                              $resultFK = $manager->executeBulkWrite($db.'.'.$collFK, $bulkFK);
-                         }
-                    } else {
-                         header('Location: ../Client/insertRecords.php?result=failedRefTable');
-                         exit;
-                    }
                } else {
                     header('Location: ../Client/insertRecords.php?result=failedInsert');
                     exit;
