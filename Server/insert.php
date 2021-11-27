@@ -52,7 +52,8 @@ if($number > 0)
                $collUniqueInd = $_GET['tablename'].'UniqueIndex'; 
 
                $ok = 0;
-               $refTable = $_GET['refTable'];
+               if($_GET['refTable']) {
+                    $refTable = $_GET['refTable'];
                     $m1 = new MongoClient();
                     $dbRefTable = $m1->selectDB($db);
                     $collectionRefTable = new MongoCollection($dbRefTable, $refTable);
@@ -63,64 +64,132 @@ if($number > 0)
                          if(!empty($itemRefTable)) {
 
                               $bulkFK = new MongoDB\Driver\BulkWrite;
+                              $bulkCheckFK = new MongoDB\Driver\BulkWrite;
                               if($foreignKey = $_GET['foreignKey']) {
                                    $collFK = $_GET['tablename'].'FK';
+                                   
+                                   $mFK = new MongoClient();
+                                   $dbFK = $mFK->selectDB($db);
+                                   $collectionFK = new MongoCollection($dbFK, $collFK);
+                                   $itemCheckFK = $collectionFK->find(array('_id' => $_POST["col_name"][2]));
+                    
+                                   $currentValFK = $collectionFK->findOne(array('_id' => $_POST["col_name"][2]), array('value'));
+                                   
+                                   if(!empty($itemCheckFK->count())) {
+                                        $idCheckFK = $bulkCheckFK->update(['_id' => $_POST["col_name"][2]], ['$set' => ['value' => $currentValFK['value'].$_POST["col_name"][0].'#']]);
+                    
+                                        $resultCheckFK = $manager->executeBulkWrite($dbFK.'.'.$collFK, $bulkCheckFK);
+                    
+                                        //we insert in the table also
+                                        $result = $manager->executeBulkWrite($db.'.'.$coll, $bulk);
+                                   } else {
+                                        $docFK = ['_id' => $_POST["col_name"][2], 'value' => $_POST["col_name"][0].'#'];
           
-                                   $docFK = ['_id' => $_POST["col_name"][2], 'value' => $_POST["col_name"][0]];
+                                        $idFK = $bulkFK->insert($docFK);
           
-                                   $idFK = $bulkFK->insert($docFK);
-          
-                                   $resultFK = $manager->executeBulkWrite($db.'.'.$collFK, $bulkFK);
+                                        $resultFK = $manager->executeBulkWrite($db.'.'.$collFK, $bulkFK);
+                    
+                                        //we insert in the table also
+                                        $result = $manager->executeBulkWrite($db.'.'.$coll, $bulk);
+                                   }
+                                   
+
+                                   
      
-                                   $ok = 1;
+                                   //if the is no unique key we insert the data
+                                   if($resultUniqueInd = $manager->executeBulkWrite($db.'.'.$collUniqueInd, $bulkUniqueInd)) {
+
+                                        //Collection for Non Unique Index
+                                        $bulkNonUniq = new MongoDB\Driver\BulkWrite;
+                                        $keyNonUniq = $_POST["col_name"][2];  //age
+                         
+                                        $valueNonUniq = $_POST["col_name"][0];  //id
+                         
+                                        $collNonUniq = $_GET['tablename'].'NonUniqueIndex';
+                         
+                                        $m = new MongoClient();
+                                        $dbNonUniq = $m->selectDB($db);
+                                        $collection = new MongoCollection($dbNonUniq, $collNonUniq);
+                                        $item = $collection->find(array('_id' => $keyNonUniq));
+                         
+                                        $currentVal = $collection->findOne(array('_id' => $keyNonUniq), array('value'));
+                                        
+                                        if(!empty($item->count())) {
+                                             $idUniqIndex = $bulkNonUniq->update(['_id' => $keyNonUniq], ['$set' => ['value' => $currentVal['value'].$valueNonUniq.'#']]);
+                         
+                                             $resultUniqueIndex = $manager->executeBulkWrite($db.'.'.$collNonUniq, $bulkNonUniq);
+                         
+                                             //we insert in the table also
+                                             $result = $manager->executeBulkWrite($db.'.'.$coll, $bulk);
+                                        } else {
+                                             $documentNonUniq = ['_id' => $keyNonUniq, 'value' => $valueNonUniq.'#'];
+                         
+                                             $_idNonUniq = $bulkNonUniq->insert($documentNonUniq);
+                         
+                                             $resultNonUniq = $manager->executeBulkWrite($db.'.'.$collNonUniq, $bulkNonUniq);
+                         
+                                             //we insert in the table also
+                                             $result = $manager->executeBulkWrite($db.'.'.$coll, $bulk);
+                                        }
+
+                                        
+                                   } else {
+                                        header('Location: ../Client/insertRecords.php?result=failedInsert');
+                                        exit;
+                                   } 
                               }
                          } 
                     } else {
+                         //no such id in parent table
                          header('Location: ../Client/insertRecords.php?result=failedNoSuchId');
                          exit;
                     }
-
-               //if the is no unique key we insert the data
-               if($resultUniqueInd = $manager->executeBulkWrite($db.'.'.$collUniqueInd, $bulkUniqueInd) && $ok == 1) {
-
-                    //Collection for Non Unique Index
-                    $bulkNonUniq = new MongoDB\Driver\BulkWrite;
-                    $keyNonUniq = $_POST["col_name"][2];  //age
-     
-                    $valueNonUniq = $_POST["col_name"][0];  //id
-     
-                    $collNonUniq = $_GET['tablename'].'NonUniqueIndex';
-     
-                    $m = new MongoClient();
-                    $dbNonUniq = $m->selectDB($db);
-                    $collection = new MongoCollection($dbNonUniq, $collNonUniq);
-                    $item = $collection->find(array('_id' => $keyNonUniq));
-     
-                    $currentVal = $collection->findOne(array('_id' => $keyNonUniq), array('value'));
-                    
-                    if(!empty($item->count())) {
-                         $idUniqIndex = $bulkNonUniq->update(['_id' => $keyNonUniq], ['$set' => ['value' => $currentVal['value'].'#'.$valueNonUniq]]);
-     
-                         $resultUniqueIndex = $manager->executeBulkWrite($db.'.'.$collNonUniq, $bulkNonUniq);
-     
-                         //we insert in the table also
-                         $result = $manager->executeBulkWrite($db.'.'.$coll, $bulk);
-                    } else {
-                         $documentNonUniq = ['_id' => $keyNonUniq, 'value' => $valueNonUniq];
-     
-                         $_idNonUniq = $bulkNonUniq->insert($documentNonUniq);
-     
-                         $resultNonUniq = $manager->executeBulkWrite($db.'.'.$collNonUniq, $bulkNonUniq);
-     
-                         //we insert in the table also
-                         $result = $manager->executeBulkWrite($db.'.'.$coll, $bulk);
-                    }
-
-                    
                } else {
-                    header('Location: ../Client/insertRecords.php?result=failedInsert');
-                    exit;
-               }              
+                    //if the is no unique key we insert the data
+                    if($resultUniqueInd = $manager->executeBulkWrite($db.'.'.$collUniqueInd, $bulkUniqueInd)) {
+
+                         //Collection for Non Unique Index
+                         $bulkNonUniq = new MongoDB\Driver\BulkWrite;
+                         $keyNonUniq = $_POST["col_name"][2];  //age
+          
+                         $valueNonUniq = $_POST["col_name"][0];  //id
+          
+                         $collNonUniq = $_GET['tablename'].'NonUniqueIndex';
+          
+                         $m = new MongoClient();
+                         $dbNonUniq = $m->selectDB($db);
+                         $collection = new MongoCollection($dbNonUniq, $collNonUniq);
+                         $item = $collection->find(array('_id' => $keyNonUniq));
+          
+                         $currentVal = $collection->findOne(array('_id' => $keyNonUniq), array('value'));
+                         
+                         if(!empty($item->count())) {
+                              $idUniqIndex = $bulkNonUniq->update(['_id' => $keyNonUniq], ['$set' => ['value' => $currentVal['value'].'#'.$valueNonUniq]]);
+          
+                              $resultUniqueIndex = $manager->executeBulkWrite($db.'.'.$collNonUniq, $bulkNonUniq);
+          
+                              //we insert in the table also
+                              $result = $manager->executeBulkWrite($db.'.'.$coll, $bulk);
+                         } else {
+                              $documentNonUniq = ['_id' => $keyNonUniq, 'value' => $valueNonUniq];
+          
+                              $_idNonUniq = $bulkNonUniq->insert($documentNonUniq);
+          
+                              $resultNonUniq = $manager->executeBulkWrite($db.'.'.$collNonUniq, $bulkNonUniq);
+          
+                              //we insert in the table also
+                              $result = $manager->executeBulkWrite($db.'.'.$coll, $bulk);
+                         }
+
+                         
+                    } else {
+                         header('Location: ../Client/insertRecords.php?result=failedInsert');
+                         exit;
+                    } 
+               }
+                    
+
+                            
           }  
      }  
      echo "Data Inserted";  
