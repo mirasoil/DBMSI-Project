@@ -95,6 +95,8 @@ $tableName = $_POST['tableName'];
                     $i1++;
                     $j1++;
                 }
+                $reference =  $xpath->query('/Databases/DataBase[@dataBaseName=\''.$currentDB.'\']/Tables/Table[@tableName=\''.$tableName.'\']/foreignKeys/foreignKey/references/refTable/text()')->item(0)->textContent;
+                $allColumns['refTable'] = $reference;
             }
             echo json_encode($allColumns);
         }

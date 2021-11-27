@@ -88,14 +88,20 @@ $(document).ready(function() {
                     var foundFK = false;
                     var i1 = 1;
                     var j1 = 0;
+                    var foundRefTable = false;
+                    var i2 = 1;
+                    var j2 = 0;
                     if(response.hasOwnProperty('uniqueKey0')) {
                         found = true;
                     }
                     if(response.hasOwnProperty('foreignKey0')) {
                         foundFK = true;
                     }
+                    if(response.hasOwnProperty('refTable')) {
+                        foundRefTable = true;
+                    }
                     $.each(response, function(key, val) {
-                        if(!key.includes('uniqueKey') && !key.includes('foreignKey')) {
+                        if(!key.includes('uniqueKey') && !key.includes('foreignKey') && !key.includes('refTable')) {
                             $('#dynamic_field').append('<tr id="row' + i +
                                 '"><td><p style="color: white;">Column name: ' + key +
                                 '</p><input type="text" name="col_name[]" placeholder="Type: ' +
@@ -117,6 +123,10 @@ $(document).ready(function() {
                         }
                         
                     }
+                    if(foundRefTable == true) {
+                        $('#dynamic_field').append(`<br><p class="p-tags-for-ref-table" style="color: white;font-size: 18px;">Referenced table: <span id='refTable${+j2}'><b> ${response['refTable']} </b><span></p><br>`)
+               
+                    }
                     $('#submit').hide();
                     $('#submit2').show();
                 }
@@ -132,10 +142,22 @@ $(document).ready(function() {
             uniqueIndexes += '&uniqueIndex[]='+$('#uniq'+i).text().split(" ").join("")
             i++
         }
+        let foreignKey = '';
+        let i1 = 0;
+        while(i1<document.querySelectorAll('.p-tags-for-foreign-key').length){
+            foreignKey += '&foreignKey[]='+$('#fk'+i1).text().split(" ").join("")
+            i1++
+        }
+        let refTable = '';
+        let i2 = 0;
+        while(i2<document.querySelectorAll('.p-tags-for-ref-table').length){
+            refTable += '&refTable='+$('#refTable'+i2).text().split(" ").join("")
+            i2++
+        }
         // console.log(uniqueIndexes) 
         // console.log(tablename)
         $.ajax({
-            url: "../Server/insert.php?dbname="+dbname+"&tablename="+tablename+uniqueIndexes,
+            url: "../Server/insert.php?dbname="+dbname+"&tablename="+tablename+uniqueIndexes+foreignKey+refTable,
             method: "POST",
             data: $('#add_columns').serialize(),
             success: function(data) {

@@ -4,10 +4,10 @@ require '../vendor/autoload.php';
 
 $bulk = new MongoDB\Driver\BulkWrite;
 
-               $key = '7';  //Always: first column is id
+               $key = '77';  //Always: first column is id
                $intKey = intval($key);
 
-               $value = 'Ion#66';  //the rest of the columns values concatenated
+               $value = 'Ion#76';  //the rest of the columns values concatenated
                // $document1 = [$key => $value];
                $document2 = ['_id' => $intKey, 'value' => $value];
                // $document3 = ['_id' => new MongoDB\BSON\ObjectId, 'title' => 'three'];
@@ -34,7 +34,7 @@ $bulk = new MongoDB\Driver\BulkWrite;
                //First check if there already exists this id in unique index file
                $coll1 = 'artistsUniqueIndex';  //numele colectiei tot din FE
 
-               $value1 = '7';
+               $value1 = '77';
 
                $m = new MongoClient();
                $dbUI = $m->selectDB($db);
