@@ -66,9 +66,13 @@
             data: {deleteRecordID: recordID},
             success: function(data) {
                 if (data == 'success') {
-                    alert('Successfully deleted record! Check mongoDB for further details');
-                } else {
-                    alert('There was a problem, please try again');
+                  alert('Successfully deleted record! Check mongoDB for further details');
+                } else if(data.includes('this id does not exist')) {
+                  alert('This id does not exist!');
+                } else if (data.includes('No such database!')) {
+                  alert ('No such database!');
+                } else if(data.includes('Cannot delete because of FK constraint!')) {
+                  alert('Cannot delete because of FK constraint!');
                 }
             }
         });

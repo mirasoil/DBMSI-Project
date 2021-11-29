@@ -154,17 +154,23 @@ $(document).ready(function() {
             refTable += '&refTable='+$('#refTable'+i2).text().split(" ").join("")
             i2++
         }
-        // console.log(uniqueIndexes) 
-        // console.log(tablename)
+
         $.ajax({
             url: "../Server/insert.php?dbname="+dbname+"&tablename="+tablename+uniqueIndexes+foreignKey+refTable,
             method: "POST",
             data: $('#add_columns').serialize(),
             success: function(data) {
-                alert('Successfully inserted! Check mongoDB for further details');
-                // console.log(data);
-                // console.log(JSON.parse(data));
-                // response = JSON.parse(data);
+                if (data.includes("success") && data.includes('Error! Duplicate key error!')) {
+                    alert('Error! Duplicate key error! Try inserting something else!');
+                } else if (data.includes('succes')) {
+                    alert('Successfully inserted! Check mongoDB for further details');
+                } else if (data.includes('No such id in parent table!')) {
+                    alert('No such id in parent table!');
+                } else if (data.includes('There was a problem. Please try again!')) {
+                    alert('There was a problem. Please try again!');
+                } else if (data.includes('duplicate key error collection')) {
+                    alert('Error! Duplicate key error! Try inserting something else!');
+                }
                 $('#add_columns')[0].reset();
                 $('#add_columns').hide();
                 $('#submit').show();
