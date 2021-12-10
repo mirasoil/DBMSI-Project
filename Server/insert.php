@@ -158,14 +158,26 @@ if($number > 0)
                          //no such id in parent table
                          echo 'No such id in parent table!';
                     }
-                    if($result) {
-                         echo 'success';
-                    } else {
-                         echo 'There was a problem. Please try again!';
-                    }
+                    // if($result) {
+                    //      echo 'success';
+                    // } else {
+                    //      echo 'There was a problem. Please try again!';
+                    // }
                } else {
                     //if the is no unique key we insert the data
-                    if(!empty($resultUniqueInd = $manager->executeBulkWrite($db.'.'.$collUniqueInd, $bulkUniqueInd))) {
+                    //first we have to check if in unique collection there is no value with the id we want to insert (otherwise duplicate)
+                    $mCheck = new MongoClient();
+                    $dbUniqueCheck = $mCheck->selectDB($db);
+                    $collUniqueCheck = new MongoCollection($dbUniqueCheck, $collUniqueInd);
+
+                    $keyCheck = $_POST["col_name"][0];
+
+                    $itemCheck = $collUniqueCheck->findOne(array('value' => (string)$keyCheck));
+
+                    if(!empty($itemCheck)) {
+                         echo 'Error! Duplicate unique key!';
+                    } else {  
+                         $insertInUniqueColl = $manager->executeBulkWrite($db.'.'.$collUniqueInd, $bulkUniqueInd);
 
                          //Collection for Non Unique Index
                          $bulkNonUniq = new MongoDB\Driver\BulkWrite;
@@ -183,30 +195,35 @@ if($number > 0)
                          $currentVal = $collection->findOne(array('_id' => $keyNonUniq), array('value'));
                          
                          if(!empty($item->count())) {
-                              $idUniqIndex = $bulkNonUniq->update(['_id' => $keyNonUniq], ['$set' => ['value' => $currentVal['value'].'#'.$valueNonUniq]]);
-          
-                              $resultUniqueIndex = $manager->executeBulkWrite($db.'.'.$collNonUniq, $bulkNonUniq);
+                              if($manager->executeBulkWrite($db.'.'.$coll, $bulk)) {
+                                   
+                                   $idNonUniqIndUpdate = $bulkNonUniq->update(['_id' => $keyNonUniq], ['$set' => ['value' => $currentVal['value'].'#'.$valueNonUniq.'#']]);
+               
+                                   $resultNonUniqueUpdate = $manager->executeBulkWrite($db.'.'.$collNonUniq, $bulkNonUniq);
+                              }
           
                               //we insert in the table also
-                              $result = $manager->executeBulkWrite($db.'.'.$coll, $bulk);
+                              // $result = $manager->executeBulkWrite($db.'.'.$coll, $bulk);
                          } else {
-                              $documentNonUniq = ['_id' => $keyNonUniq, 'value' => $valueNonUniq];
-          
-                              $_idNonUniq = $bulkNonUniq->insert($documentNonUniq);
-          
-                              $resultNonUniq = $manager->executeBulkWrite($db.'.'.$collNonUniq, $bulkNonUniq);
+                              if($manager->executeBulkWrite($db.'.'.$coll, $bulk)) {
+
+                                   $documentNonUniq = ['_id' => $keyNonUniq, 'value' => $valueNonUniq];
+               
+                                   $_idNonUniq = $bulkNonUniq->insert($documentNonUniq);
+               
+                                   $resultNonUniq = $manager->executeBulkWrite($db.'.'.$collNonUniq, $bulkNonUniq);
+                              }
           
                               //we insert in the table also
-                              $result = $manager->executeBulkWrite($db.'.'.$coll, $bulk);
-                         }    
-                    } else {
-                         echo 'Error! Duplicate unique key!';
-                    } 
-                    if($result) {
+                              // $result = $manager->executeBulkWrite($db.'.'.$coll, $bulk);
+                         }
                          echo 'success';
-                    } else {
-                         echo 'There was a problem. Please try again!';
-                    }
+                    } 
+                    // if($result) {
+                    //      echo 'success';
+                    // } else {
+                    //      echo 'There was a problem. Please try again!';
+                    // }
                }                           
           }  else {
                echo 'Please insert value in the field';

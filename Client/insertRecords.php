@@ -170,6 +170,8 @@ $(document).ready(function() {
                     alert('There was a problem. Please try again!');
                 } else if (data.includes('duplicate key error collection')) {
                     alert('Error! Duplicate key error! Try inserting something else!');
+                } else if(data.includes('Error! Duplicate unique key!')) {
+                    alert('Error! Duplicate key error! Try inserting something else!');
                 }
                 $('#add_columns')[0].reset();
                 $('#add_columns').hide();
