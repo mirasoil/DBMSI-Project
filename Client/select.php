@@ -122,17 +122,8 @@
                                 id="DataTables_Table_0" aria-describedby="DataTables_Table_0_info"
                                 style="width: 505px;">
                                 <thead>
-                                    <tr role="row" style="height: 0px;">
-                                        <th class="sorting" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
-                                            aria-label="id: activate to sort column ascending"
-                                            style="padding-top: 0px; padding-bottom: 0px; border-top-width: 0px; border-bottom-width: 0px; height: 0px; width: 10.5px;">
-                                            _id
-                                        </th>
-                                        <th class="sorting" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
-                                            aria-label="created_at: activate to sort column ascending"
-                                            style="padding-top: 0px; padding-bottom: 0px; border-top-width: 0px; border-bottom-width: 0px; height: 0px; width: 70.5px;">
-                                            value
-                                        </th>
+                                    <tr role="row" style="height: 0px;" id="tableHead">
+                                        
                                     </tr>
                                 </thead>
                                 <tbody id="dynamic_field">
@@ -419,7 +410,7 @@
     <div class="clearfix"></div>
 </div>
 
-<div id="fieldCloneTable" class="parent" style="display: none; margin: 3px;">
+<div id="fieldCloneTable" class="parent" style="margin: 3px;">
     <div class="pull-left">
         <a href="#" class="remove removeme"><i class="glyphicon glyphicon-trash glyphicon-2x" style="margin-top: 5px;"></i></a>
     </div>
@@ -427,7 +418,7 @@
         &nbsp;
     </div>
     <div class="pull-left">
-        <select name="jointype[]" class="form-control" style="width: 150px;">
+        <select name="jointype[]" class="form-control" style="width: 150px;" id="jointype">
             <option value="INNER JOIN">INNER JOIN</option>
             <option value="LEFT JOIN">LEFT JOIN</option>
             <option value="RIGHT JOIN">RIGHT JOIN</option>
@@ -438,7 +429,7 @@
         &nbsp;
     </div>
     <div class="pull-left">
-        <select name="jointable[]" class="jointable form-control" style="width: 160px;">
+        <select name="jointable[]" class="jointable form-control" style="width: 160px;" id="jointable">
             <option value="">Joining Table</option>
         </select>
     </div>
@@ -446,19 +437,14 @@
         &nbsp;
     </div>
     <div class="pull-left">
-        <select name="joinfield[]" class="joinfieldselected form-control" style="width: 160px;">
+        <select name="joinfield[]" class="joinfieldselected form-control" style="width: 160px;" id="joinfield">
             <option value="">Joining Field</option>
         </select>
     </div>
     <div class="pull-left" style="margin: 3px;">
         &nbsp;
     </div>
-    <div class="pull-left">
-        <select name="joinfieldp[]" class="joinfieldmain form-control" style="width: 160px;">
-            <option value="">Joining Field Main</option>
-            
-        </select>
-    </div>
+    <button class="btn btn-primary" id="execute">Execute</button>
     <div class="clearfix"></div>
 </div>
 
@@ -499,6 +485,12 @@ $("#database").on('change', function() {
             for (var i = 0; i < data.length; i++) {
                 sel.append('<option value="' + data[i] + '">' + data[i] + '</option>');
             }
+            // add the collections from the selected db to the join field also
+            var join = $('#jointable');
+            join.empty();
+            for (var i = 0; i < data.length; i++) {
+                join.append('<option value="' + data[i] + '">' + data[i] + '</option>');
+            }
         }
     });
 });
@@ -518,28 +510,123 @@ $("#collection").on('change', function() {
         },
         success: function(encodedData) {
             var data = JSON.parse(encodedData);
-            // console.log(data);
+            console.log(data);
+            var tableHead = $('#tableHead');
+            tableHead.empty();
             var table = $('#dynamic_field');
             table.empty();
-            var length = data.length;
-            for (var i = 0; i < length - 1; i++) {
+            var dataLength = Object.keys(data).length;
+            console.log(dataLength);
+            console.log(data[dataLength - 1]);
+            for(var i = 0; i < data[dataLength - 1]; i++) {
+                for(let prop in data[i]) {
+
+                    tableHead.append(`
+                        <th 
+                            style="padding-top: 0px; padding-bottom: 0px; border-top-width: 0px; border-bottom-width: 0px; height: 0px; width: 10.5px;">
+                            ${prop}
+                        </th>`);
+                }
+                
+            } 
+            for(let j = 0; j < data[dataLength - 1]*3; j=j+3) {
                 table.append(`
-                    <tr>
-                        <td style="white-space: nowrap !important;">
-                            ${data[i]._id}
-                        </td>
-                        <td style="white-space: nowrap !important;">
-                            ${data[i].value}
-                        </td>
-                    </tr>`);
+                        <tr>
+                            <td style="white-space: nowrap !important;">
+                                ${Object.values(data[j])}
+                            </td>
+                            <td style="white-space: nowrap !important;">
+                                ${Object.values(data[j+1])}
+                            </td>
+                            <td style="white-space: nowrap !important;">
+                                ${Object.values(data[j+2])}
+                            </td>
+                        </tr>`);
             }
             $('#queryTableName').html(selectedColl);
-            $('#infoRecords').html(`Showing ${length-1} of ${length-1} results`);
-            $('.timetaken').html(`Time Taken: <strong> ${data[length-1]} </strong> second(s)!`);
+            $('#infoRecords').html(`Showing ${dataLength-1} of ${dataLength-1} results`);
+            $('.timetaken').html(`Time Taken: <strong> ${data[dataLength-1]} </strong> second(s)!`);
             $('#querySelectedColl').html(selectedColl);
+            // also add the fields on the join field section
+            var join = $('#joinfield');
+            join.empty();
+            join.append('<option value="id">_id</option>');
+            join.append('<option value="value">value</option>');
         }
     });
 });
+
+
+
+//JOIN - execute the join
+$('#execute').on('click', function() {
+    var db = $("#database").children("option:selected").val();
+    var coll1 = $("#collection").children("option:selected").val();
+    var joinType = $("#jointype").children("option:selected").val();
+    var joinTable = $("#jointable").children("option:selected").val();
+    var joinField = $("#joinfield").children("option:selected").val();
+    console.log(joinType, joinTable, joinField);
+
+    $.ajax({
+        url: "../Server/join.php",
+        method: 'POST',
+        data: {
+            db: db,
+            coll1: coll1,
+            joinType: joinType,
+            joinTable: joinTable,
+            joinField: joinField
+        },
+        success: function(encodedData) {
+            var data = JSON.parse(encodedData);
+            console.log(data);
+            var table = $('#dynamic_field');
+            table.empty();
+            var length = data.length;
+            console.log(data.length)
+            for (var i = 0; i < length - 1; i++) {
+                // console.log(data[i])
+                if(data[i].collection) {
+                    table.append(`
+                        <tr>
+                            <td style="white-space: nowrap !important;">
+                                <b> Collection ${data[i].collection} </b>
+                            </td>
+                            <td style="white-space: nowrap !important;">
+                                <b> Collection ${data[i].collection} </b>
+                            </td>
+                        </tr>`);
+                } else if(data[i].collectionJoin) {
+                    table.append(`
+                        <tr>
+                            <td style="white-space: nowrap !important;">
+                                <b> Collection  ${data[i].collectionJoin} </b>
+                            </td>
+                            <td style="white-space: nowrap !important;">
+                                <b> Collection  ${data[i].collectionJoin} </b>
+                            </td>
+                        </tr>`);
+                } else {
+                    table.append(`
+                        <tr>
+                            <td style="white-space: nowrap !important;">
+                                ${data[i]._id}
+                            </td>
+                            <td style="white-space: nowrap !important;">
+                                ${data[i].value}
+                            </td>
+                        </tr>`);
+                }
+            }
+            // $('#queryTableName').html(selectedColl);
+            // $('#infoRecords').html(`Showing ${length-1} of ${length-1} results`);
+            // $('.timetaken').html(`Time Taken: <strong> ${data[length-1]} </strong> second(s)!`);
+            // $('#querySelectedColl').html(selectedColl);
+        }
+    });
+})
+
+
 </script>
 <!-- <script src="/DBMSI-Project/app/assets/js/jquery-1.10.2.js"></script>
 <script src="/DBMSI-Project/app/assets/js/bootstrap.min.js"></script>
