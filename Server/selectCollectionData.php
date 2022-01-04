@@ -5,7 +5,7 @@ require '../vendor/autoload.php';
 $db = $_POST['db'];
 $coll = $_POST['coll'];
 // $db = 'db4';
-// $coll = 'order';
+// $coll = 'customer';
 
 
 // we have to look inside catalog to check how many attribute tags we have
@@ -26,18 +26,22 @@ $tags = $node->getElementsByTagName('DataBase'); //access databases
 
 $i = 0;
 $attrNames = [];
-
-foreach($tags as $tag)
-{
-    $dbName = $tag->getAttribute("dataBaseName");
-    if($dbName == $db){
-        //if any database with the same name is found, we should check if it has tables with same name
-        $tableTags = $xpath->query('/Databases/DataBase[@dataBaseName=\''.$dbName.'\']/Tables/Table[@tableName=\''.$coll.'\']/Structure/Attribute');
-        foreach($tableTags as $tableTag) {
-            $attrNames[$i] = $xpath->query('/Databases/DataBase[@dataBaseName=\''.$dbName.'\']/Tables/Table[@tableName=\''.$coll.'\']/Structure/Attribute[\''.$i.'\']/@attributeName')->item($i)->value;
-            $i++;
-        }
-    }  
+if(str_contains($coll, 'Index') !== false) {
+    $attrNames[0] = '_id';
+    $attrNames[1] = 'value';
+} else {
+    foreach($tags as $tag)
+    {
+        $dbName = $tag->getAttribute("dataBaseName");
+        if($dbName == $db){
+            //if any database with the same name is found, we should check if it has tables with same name
+            $tableTags = $xpath->query('/Databases/DataBase[@dataBaseName=\''.$dbName.'\']/Tables/Table[@tableName=\''.$coll.'\']/Structure/Attribute');
+            foreach($tableTags as $tableTag) {
+                $attrNames[$i] = $xpath->query('/Databases/DataBase[@dataBaseName=\''.$dbName.'\']/Tables/Table[@tableName=\''.$coll.'\']/Structure/Attribute[\''.$i.'\']/@attributeName')->item($i)->value;
+                $i++;
+            }
+        }  
+    }
 }
 // echo $i;
 // echo '<br>';

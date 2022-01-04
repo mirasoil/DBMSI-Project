@@ -516,8 +516,6 @@ $("#collection").on('change', function() {
             var table = $('#dynamic_field');
             table.empty();
             var dataLength = Object.keys(data).length;
-            console.log(dataLength);
-            console.log(data[dataLength - 1]);
             for(var i = 0; i < data[dataLength - 1]; i++) {
                 for(let prop in data[i]) {
 
@@ -529,8 +527,29 @@ $("#collection").on('change', function() {
                 }
                 
             } 
-            for(let j = 0; j < data[dataLength - 1]*3; j=j+3) {
-                table.append(`
+            let hasValue = false;
+            for(let x = 0; x < data[dataLength - 1]; x++) {
+                if(data[x].hasOwnProperty('value')) {
+                    hasValue = true;
+                    break;
+                }
+            }
+            if(hasValue) {
+                for(let j = 0; j < data[dataLength-1]*2; j=j+2) {
+                
+                        table.append(`
+                            <tr>
+                                <td style="white-space: nowrap !important;">
+                                    ${Object.values(data[j])}
+                                </td>
+                                <td style="white-space: nowrap !important;">
+                                    ${Object.values(data[j+1])}
+                                </td>
+                            </tr>`);
+                }
+            } else {
+                for(let j = 0; j < data[dataLength - 1]*3; j=j+3) {
+                    table.append(`
                         <tr>
                             <td style="white-space: nowrap !important;">
                                 ${Object.values(data[j])}
@@ -542,7 +561,9 @@ $("#collection").on('change', function() {
                                 ${Object.values(data[j+2])}
                             </td>
                         </tr>`);
+                }
             }
+            let newArray = Object.entries(data);
             $('#queryTableName').html(selectedColl);
             $('#infoRecords').html(`Showing ${dataLength-1} of ${dataLength-1} results`);
             $('.timetaken').html(`Time Taken: <strong> ${data[dataLength-1]} </strong> second(s)!`);
