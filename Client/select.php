@@ -63,7 +63,7 @@
                 <div class="pull-right" id="addbuttoncontainer">
                     <button rel="hover_popover" data-content="Build Visual Query" class="btn btn-primary btn-lg"
                         data-toggle="modal" data-target="#modal-visual-query" data-original-title="" title="">
-                        <i class="fa fa-database"></i> Visual Query
+                        <i class="fa fa-database"></i> Conditional Query
                     </button>
 
                     <button rel="hover_popover" data-content="Type Custom Query" class="btn btn-primary btn-lg"
@@ -254,86 +254,52 @@
                 <div class="modal-header label-success">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                     <h4 class="modal-title"><i class="text-white fa fa-database"></i> <span
-                           class="text-white bold">Visual Query</span></h4>
+                           class="text-white bold">Conditional Query</span></h4>
                 </div>
 
                 <div class="modal-body">
-                    <div class="form-group">
-                        <button style="margin-bottom: 10px !important;" type="button" id="btnJoinTable" class="btn btn-primary" rel="hover_popover" data-content="Join a table">
-                            <i class="glyphicon glyphicon-plus-sign"></i> Join Table
-                        </button>
-                        <br/>
-                        <a style="display: none;" href="#" id="addjoinedtablefields"><i class="fa fa-refresh"></i> Click
-                            to add Joined Table Fields</a>
-                    </div>
 
                     <div class="form-group">
-                        <label class="control-label" for="fields">Select Fields</label>
-
-                        <div class="controls">
-                            <select name="fields[]" id="fields" multiple class="fields form-control col-lg-8">
-                                
-                            </select>
-                        </div>
+                        SELECT 
+                        <select name="selectOperator" id="selectOperator" class="form-control" style="width: 230px; margin-right: 20px;">
+                            <option value="*">*</option>
+                        </select>
+                        <!-- <label>SELECT</label>
+                        <ul>
+                            <li><input type="checkbox"> checkbox 1</li>
+                            <li><input type="checkbox"> checkbox 2</li>
+                            <li><input type="checkbox"> checkbox 3</li>
+                            <li><input type="checkbox"> checkbox 4</li>
+                        </ul> -->
                     </div>
-
                     <div class="form-group">
-                        <button style="margin-bottom: 10px !important;" type="button" id="btnAddWhere" class="btn btn-primary" rel="hover_popover" data-content="Add WHERE clause conditions">
-                            <i class="glyphicon glyphicon-plus-sign"></i> Add Condition
-                        </button>
-                    </div>
+                        <br />
+                        FROM
+                        <select name="collectionModal" id="collectionModal" class="form-control" style="width: 230px; margin-right: 20px;">
 
+                        </select>
+                    </div>
                     <div class="form-group">
-                        <button type="button" id="btnOrderby" class="btn btn-primary" rel="hover_popover" data-content="Add ORDER BY clause fields">
-                            <i class="glyphicon glyphicon-plus-sign"></i> Add Order
-                        </button>
-                    </div>
+                        <br />
+                        WHERE
+                        <select name="selConditionField" id="selConditionField" class="form-control" style="width: 230px; margin-right: 20px;">
 
-                    <div class="form-group parent" style="display: none;" id="orderby">
-                        <div class="pull-left">
-                            <a href="#" class="remove"><i class="glyphicon glyphicon-trash glyphicon-2x" style="margin-top: 5px;"></i></a>
-                        </div>
-                        <div class="pull-left" style="margin: 3px;">
-                            &nbsp;
-                        </div>
-                        <div class="controls pull-left">
-                            <select name="orderfields[]" id="orderfields" multiple class="orderfields form-control" style="width: 400px;">
-                                
-                            </select>
-                        </div>
-                        <div class="pull-left">
-                            &nbsp;&nbsp;
-                        </div>
-                        <div class="controls pull-left">
-                            <input type="checkbox" id="chkDescending" name="chkDescending"/>
-                            <label class="control-label" for="chkDescending" class="form-control">Descending</label>
-                        </div>
+                        </select>
                     </div>
-
                     <div class="form-group">
-                        <button type="button" id="btnGroup" class="btn btn-primary" rel="hover_popover" data-content="Add GROUP BY clause fields">
-                            <i class="glyphicon glyphicon-plus-sign"></i> Add Group Field
-                        </button>
+                        <br />
+                        <select name="selConditionOperator" id="selConditionOperator" class="form-control" style="width: 230px; margin-right: 20px;">
+                            <option value="=">=</option>
+                            <option value="<"><</option>
+                            <option value="<="><=</option>
+                            <option value=">">></option>
+                            <option value=">=">>=</option>
+                        </select>
                     </div>
-
-                    <div class="form-group parent" style="display: none;" id="group">
-                        <div class="pull-left">
-                            <a href="#" class="remove"><i class="glyphicon glyphicon-trash glyphicon-2x" style="margin-top: 5px;"></i></a>
-                        </div>
-                        <div class="pull-left" style="margin: 3px;">
-                            &nbsp;
-                        </div>
-                        <div class="controls pull-left">
-                            <select name="groupfields[]" id="groupfields" multiple class="groupfields form-control" style="width: 400px;">
-                                
-                            </select>
-                        </div>
-                    </div>
-
                     <div class="form-group">
-                        <button type="button" id="btnLimit" class="btn btn-primary" rel="hover_popover" data-content="Add LIMIT clause details">
-                            <i class="glyphicon glyphicon-plus-sign"></i> Add Limit
-                        </button>
+                        <br />
+                        <label for="selConditionFieldSecondary">Enter your condition</label>
+                        <input type="text" name="selConditionFieldSecondary" id="selConditionFieldSecondary" style="width: 230px; margin-right: 20px;" class="form-control">
                     </div>
 
                     <div class="form-group parent" style="display: none;" id="limit">
@@ -361,7 +327,7 @@
                     <label for="printArray">Print POST Array</label>
                     &nbsp;&nbsp;
 
-                    <button type="submit" id="btnVisualQuery" class="btn btn-success"><i class="fa fa-play"></i>
+                    <button type="button" id="runQuery" class="btn btn-success"><i class="fa fa-play"></i>
                         Run Query
                     </button>
 
@@ -491,6 +457,11 @@ $("#database").on('change', function() {
             for (var i = 0; i < data.length; i++) {
                 join.append('<option value="' + data[i] + '">' + data[i] + '</option>');
             }
+            var selModal = $('#collectionModal');
+            selModal.empty()
+            for (var i = 0; i < data.length; i++) {
+                selModal.append('<option value="' + data[i] + '">' + data[i] + '</option>');
+            }
         }
     });
 });
@@ -510,20 +481,30 @@ $("#collection").on('change', function() {
         },
         success: function(encodedData) {
             var data = JSON.parse(encodedData);
-            console.log(data);
+            // console.log(data);
             var tableHead = $('#tableHead');
             tableHead.empty();
             var table = $('#dynamic_field');
             table.empty();
             var dataLength = Object.keys(data).length;
+
+            var selConditionField = $('#selConditionField');
+            var selCondition = $('#selCondition');
+            var selectOperator = $('#selectOperator');
+
             for(var i = 0; i < data[dataLength - 1]; i++) {
                 for(let prop in data[i]) {
-
                     tableHead.append(`
                         <th 
                             style="padding-top: 0px; padding-bottom: 0px; border-top-width: 0px; border-bottom-width: 0px; height: 0px; width: 10.5px;">
                             ${prop}
                         </th>`);
+                    selConditionField.append(`
+                        <option value="${prop}">${prop}</option>
+                    `)
+                    selectOperator.append(`
+                        <option value="${prop}">${prop}</option>
+                    `)
                 }
                 
             } 
@@ -536,16 +517,15 @@ $("#collection").on('change', function() {
             }
             if(hasValue) {
                 for(let j = 0; j < data[dataLength-1]*2; j=j+2) {
-                
-                        table.append(`
-                            <tr>
-                                <td style="white-space: nowrap !important;">
-                                    ${Object.values(data[j])}
-                                </td>
-                                <td style="white-space: nowrap !important;">
-                                    ${Object.values(data[j+1])}
-                                </td>
-                            </tr>`);
+                    table.append(`
+                        <tr>
+                            <td style="white-space: nowrap !important;">
+                                ${Object.values(data[j])}
+                            </td>
+                            <td style="white-space: nowrap !important;">
+                                ${Object.values(data[j+1])}
+                            </td>
+                        </tr>`);
                 }
             } else {
                 for(let j = 0; j < data[dataLength - 1]*3; j=j+3) {
@@ -565,14 +545,165 @@ $("#collection").on('change', function() {
             }
             let newArray = Object.entries(data);
             $('#queryTableName').html(selectedColl);
-            $('#infoRecords').html(`Showing ${dataLength-1} of ${dataLength-1} results`);
-            $('.timetaken').html(`Time Taken: <strong> ${data[dataLength-1]} </strong> second(s)!`);
+            $('#infoRecords').html(`Showing ${dataLength-2} of ${dataLength-2} results`);
+            $('.timetaken').html(`Time Taken: <strong> ${data[dataLength-2]} </strong> second(s)!`);
             $('#querySelectedColl').html(selectedColl);
             // also add the fields on the join field section
             var join = $('#joinfield');
             join.empty();
             join.append('<option value="id">_id</option>');
             join.append('<option value="value">value</option>');
+        }
+    });
+});
+
+//send the selected collection and populate the table 
+$("#collectionModal").on('change', function() {
+    var selectedDB = $("#database").children("option:selected").val();
+    var selectedColl = $(this).children("option:selected").val();
+    // console.log(selectedColl);
+
+    $.ajax({
+        url: "../Server/selectCollectionData.php",
+        method: 'POST',
+        data: {
+            db: selectedDB,
+            coll: selectedColl
+        },
+        success: function(encodedData) {
+            var data = JSON.parse(encodedData);
+            // console.log(data);
+            var tableHead = $('#tableHead');
+            tableHead.empty();
+            var table = $('#dynamic_field');
+            table.empty();
+            var dataLength = Object.keys(data).length;
+
+            var selConditionField = $('#selConditionField');
+            var selCondition = $('#selCondition');
+            var selectOperator = $('#selectOperator');
+
+            selectOperator.empty();
+            selConditionField.empty();
+            selectOperator.append(`<option value="*">*</option>`);
+
+            for(var i = 0; i < data[dataLength - 1]; i++) {
+                for(let prop in data[i]) {
+                    selConditionField.append(`
+                        <option value="${prop}">${prop}</option>
+                    `)
+                    selectOperator.append(`
+                        <option value="${prop}">${prop}</option>
+                    `)
+                }
+                
+            } 
+            let newArray = Object.entries(data);
+            $('#queryTableName').html(selectedColl);
+            $('#infoRecords').html(`Showing ${dataLength-2} of ${dataLength-2} results`);
+            $('.timetaken').html(`Time Taken: <strong> ${data[dataLength-2]} </strong> second(s)!`);
+            $('#querySelectedColl').html(selectedColl);
+            // also add the fields on the join field section
+            var join = $('#joinfield');
+            join.empty();
+            join.append('<option value="id">_id</option>');
+            join.append('<option value="value">value</option>');
+        }
+    });
+});
+
+//conditional select
+$("#runQuery").on('click', function() {
+    var selectedDB = $("#database").children("option:selected").val();
+
+    var selectOperator = $('#selectOperator').children("option:selected").val();
+    var collectionModal = $('#collectionModal').children("option:selected").val();
+    var selConditionField = $('#selConditionField').children("option:selected").val();
+    var selConditionOperator = $('#selConditionOperator').children("option:selected").val();
+    var selConditionFieldSecondary = $('#selConditionFieldSecondary').val();
+
+    var selectedColl = collectionModal;
+
+    // console.log('selectedDB '+selectedDB);
+    // console.log('selectOperator '+selectOperator);
+    // console.log('collectionModal '+collectionModal);
+    // console.log('selConditionField '+selConditionField);
+    // console.log('selConditionOperator '+selConditionOperator);
+    // console.log('selConditionFieldSecondary '+selConditionFieldSecondary);
+
+    $.ajax({
+        url: "../Server/conditionalSelect.php",
+        method: 'POST',
+        data: {
+            db: selectedDB,
+            coll: collectionModal,
+            selectOperator: selectOperator,
+            selConditionField: selConditionField,
+            selConditionOperator: selConditionOperator,
+            selConditionFieldSecondary: selConditionFieldSecondary
+        },
+        success: function(encodedData) {
+            var data = JSON.parse(encodedData);
+            console.log(data);
+
+            var tableHead = $('#tableHead');
+            tableHead.empty();
+
+            var table = $('#dynamic_field');
+            table.empty();
+
+            var dataLength = Object.keys(data).length;
+
+            for(var i = 0; i < data[dataLength - 1]; i++) {
+                for(let prop in data[i]) {
+                    tableHead.append(`
+                        <th 
+                            style="padding-top: 0px; padding-bottom: 0px; border-top-width: 0px; border-bottom-width: 0px; height: 0px; width: 10.5px;">
+                            ${prop}
+                        </th>`);
+                }
+                
+            } 
+            let hasValue = false;
+            for(let x = 0; x < data[dataLength - 1]; x++) {
+                if(data[x].hasOwnProperty('value')) {
+                    hasValue = true;
+                    break;
+                }
+            }
+            if(hasValue) {
+                for(let j = 0; j < data[dataLength-1]*2; j=j+2) {
+                    table.append(`
+                        <tr>
+                            <td style="white-space: nowrap !important;">
+                                ${Object.values(data[j])}
+                            </td>
+                            <td style="white-space: nowrap !important;">
+                                ${Object.values(data[j+1])}
+                            </td>
+                        </tr>`);
+                }
+            } else {
+                for(let j = 0; j < data[dataLength - 1]*3; j=j+3) {
+                    table.append(`
+                        <tr>
+                            <td style="white-space: nowrap !important;">
+                                ${Object.values(data[j])}
+                            </td>
+                            <td style="white-space: nowrap !important;">
+                                ${Object.values(data[j+1])}
+                            </td>
+                            <td style="white-space: nowrap !important;">
+                                ${Object.values(data[j+2])}
+                            </td>
+                        </tr>`);
+                }
+            }
+            let newArray = Object.entries(data);
+            $('#queryTableName').html(selectedColl);
+            $('#infoRecords').html(`Showing ${dataLength-2} of ${dataLength-2} results`);
+            $('.timetaken').html(`Time Taken: <strong> ${data[dataLength-2]} </strong> second(s)!`);
+            $('#querySelectedColl').html(selectedColl);
         }
     });
 });
@@ -639,28 +770,10 @@ $('#execute').on('click', function() {
                         </tr>`);
                 }
             }
-            // $('#queryTableName').html(selectedColl);
-            // $('#infoRecords').html(`Showing ${length-1} of ${length-1} results`);
-            // $('.timetaken').html(`Time Taken: <strong> ${data[length-1]} </strong> second(s)!`);
-            // $('#querySelectedColl').html(selectedColl);
         }
     });
 })
 
 
 </script>
-<!-- <script src="/DBMSI-Project/app/assets/js/jquery-1.10.2.js"></script>
-<script src="/DBMSI-Project/app/assets/js/bootstrap.min.js"></script>
-<script src="/DBMSI-Project/app/assets/plugins/dataTables/jquery.dataTables.js"></script>
-<script src="/DBMSI-Project/app/assets/plugins/dataTables/dataTables.bootstrap.js"></script>
-<script src="/DBMSI-Project/app/assets/plugins/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
-<script src="/DBMSI-Project/app/assets/plugins/jGrowl/jquery.jgrowl.js"></script>
-<script src="/DBMSI-Project/app/assets/plugins/ace/src-min-noconflict/ext-language_tools.js"></script>
-<script>
-    var base = "/DBMSI-Project/app";
-    var controller = "table/customer";
-    var basePath = "/DBMSI-Project/app/";
-    var lastSegment = "customer";
-</script>
-<script src="/DBMSI-Project/app/assets/js/custom.js?v=1639134576"></script> -->
 </html>
