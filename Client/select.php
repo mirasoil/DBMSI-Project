@@ -481,12 +481,11 @@ $("#collection").on('change', function() {
         },
         success: function(encodedData) {
             var data = JSON.parse(encodedData);
-            console.log(data);
+            // console.log(data);
             var tableHead = $('#tableHead');
             tableHead.empty();
             var table = $('#dynamic_field');
             table.empty();
-            
             var dataLength = Object.keys(data).length;
 
             var selConditionField = $('#selConditionField');
@@ -509,15 +508,6 @@ $("#collection").on('change', function() {
                 }
                 
             } 
-            // for each group of data from response append tr, last two attributes are execution time and number of attr
-
-            for(let n = (dataLength-2)/data[dataLength-1]; n > 0; n--) {
-                table.append(`<tr> </tr>`)
-            }
-            let tableRows = table.children();
-            console.log('dataLenght '+dataLength)
-            console.log('tableRows '+tableRows.length)
-
             let hasValue = false;
             for(let x = 0; x < data[dataLength - 1]; x++) {
                 if(data[x].hasOwnProperty('value')) {
@@ -538,34 +528,19 @@ $("#collection").on('change', function() {
                         </tr>`);
                 }
             } else {
-                let counter = 0;
-                let table1 = $('#dynamic_field tr:nth-child(1)');
-                let once = 0;
-                for(let j = 0; j <= dataLength-2; j++) {
-                    once = 0;
-                    if(j < data[dataLength-1]) {
-                        if(data[dataLength-1] % j == 0 && j!=0 && j != 1 && j!= 2) {
-                            console.log('am intrat aici '+counter)
-                            console.log('j '+j)
-                            counter++;
-                            once = 1;
-                        }
-                    } else {
-                        if(j % data[dataLength-1] == 0 && j!=0) {
-                            console.log('counter '+counter)
-                            console.log('j '+j)
-                            counter++;
-                            once = 1;
-                        }
-                    }
-                    if(once == 1) {
-    
-                        table1 = $('#dynamic_field tr:nth-child('+(counter+1)+')');
-                    }
-                    table1.append(`
-                                <td style="white-space: nowrap !important;">
-                                    ${Object.values(data[j])}
-                                </td>`)
+                for(let j = 0; j < data[dataLength - 1]*3; j=j+3) {
+                    table.append(`
+                        <tr>
+                            <td style="white-space: nowrap !important;">
+                                ${Object.values(data[j])}
+                            </td>
+                            <td style="white-space: nowrap !important;">
+                                ${Object.values(data[j+1])}
+                            </td>
+                            <td style="white-space: nowrap !important;">
+                                ${Object.values(data[j+2])}
+                            </td>
+                        </tr>`);
                 }
             }
             let newArray = Object.entries(data);
@@ -669,7 +644,7 @@ $("#runQuery").on('click', function() {
         },
         success: function(encodedData) {
             var data = JSON.parse(encodedData);
-            // console.log(data);
+            console.log(data);
 
             var tableHead = $('#tableHead');
             tableHead.empty();
@@ -689,13 +664,6 @@ $("#runQuery").on('click', function() {
                 }
                 
             } 
-            // for each group of data from response append tr, last two attributes are execution time and number of attr
-
-            for(let n = (dataLength-2)/data[dataLength-1]; n > 0; n--) {
-                table.append(`<tr> </tr>`)
-            }
-            let tableRows = table.children();
-
             let hasValue = false;
             for(let x = 0; x < data[dataLength - 1]; x++) {
                 if(data[x].hasOwnProperty('value')) {
@@ -716,30 +684,19 @@ $("#runQuery").on('click', function() {
                         </tr>`);
                 }
             } else {
-                let counter = 0;
-                let table1 = $('#dynamic_field tr:nth-child(1)');
-                let once = 0;
-                for(let j = 0; j <= dataLength-2; j++) {
-                    once = 0;
-                    if(j < data[dataLength-1]) {
-                        if(data[dataLength-1] % j == 0 && j!=0 && j != 1 && j!= 2) {
-                            counter++;
-                            once = 1;
-                        }
-                    } else {
-                        if(j % data[dataLength-1] == 0 && j!=0) {
-                            counter++;
-                            once = 1;
-                        }
-                    }
-                    if(once == 1) {
-    
-                        table1 = $('#dynamic_field tr:nth-child('+(counter+1)+')');
-                    }
-                    table1.append(`
-                                <td style="white-space: nowrap !important;">
-                                    ${Object.values(data[j])}
-                                </td>`)
+                for(let j = 0; j < data[dataLength - 1]*3; j=j+3) {
+                    table.append(`
+                        <tr>
+                            <td style="white-space: nowrap !important;">
+                                ${Object.values(data[j])}
+                            </td>
+                            <td style="white-space: nowrap !important;">
+                                ${Object.values(data[j+1])}
+                            </td>
+                            <td style="white-space: nowrap !important;">
+                                ${Object.values(data[j+2])}
+                            </td>
+                        </tr>`);
                 }
             }
             let newArray = Object.entries(data);
