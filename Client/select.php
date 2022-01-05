@@ -486,6 +486,7 @@ $("#collection").on('change', function() {
             tableHead.empty();
             var table = $('#dynamic_field');
             table.empty();
+            
             var dataLength = Object.keys(data).length;
 
             var selConditionField = $('#selConditionField');
@@ -508,6 +509,13 @@ $("#collection").on('change', function() {
                 }
                 
             } 
+            // for each group of data from response append tr, last two attributes are execution time and number of attr
+
+            for(let n = (dataLength-2)/data[dataLength-1]; n > 0; n--) {
+                table.append(`<tr> </tr>`)
+            }
+            let tableRows = table.children();
+
             let hasValue = false;
             for(let x = 0; x < data[dataLength - 1]; x++) {
                 if(data[x].hasOwnProperty('value')) {
@@ -528,19 +536,30 @@ $("#collection").on('change', function() {
                         </tr>`);
                 }
             } else {
-                for(let j = 0; j < data[dataLength - 1]*3; j=j+3) {
-                    table.append(`
-                        <tr>
-                            <td style="white-space: nowrap !important;">
-                                ${Object.values(data[j])}
-                            </td>
-                            <td style="white-space: nowrap !important;">
-                                ${Object.values(data[j+1])}
-                            </td>
-                            <td style="white-space: nowrap !important;">
-                                ${Object.values(data[j+2])}
-                            </td>
-                        </tr>`);
+                let counter = 0;
+                let table1 = $('#dynamic_field tr:nth-child(1)');
+                let once = 0;
+                for(let j = 0; j <= dataLength-2; j++) {
+                    once = 0;
+                    if(j < data[dataLength-1]) {
+                        if(data[dataLength-1] % j == 0 && j!=0 && j != 1 && j!= 2) {
+                            counter++;
+                            once = 1;
+                        }
+                    } else {
+                        if(j % data[dataLength-1] == 0 && j!=0) {
+                            counter++;
+                            once = 1;
+                        }
+                    }
+                    if(once == 1) {
+    
+                        table1 = $('#dynamic_field tr:nth-child('+(counter+1)+')');
+                    }
+                    table1.append(`
+                                <td style="white-space: nowrap !important;">
+                                    ${Object.values(data[j])}
+                                </td>`)
                 }
             }
             let newArray = Object.entries(data);
@@ -644,7 +663,7 @@ $("#runQuery").on('click', function() {
         },
         success: function(encodedData) {
             var data = JSON.parse(encodedData);
-            console.log(data);
+            // console.log(data);
 
             var tableHead = $('#tableHead');
             tableHead.empty();
@@ -664,6 +683,13 @@ $("#runQuery").on('click', function() {
                 }
                 
             } 
+            // for each group of data from response append tr, last two attributes are execution time and number of attr
+
+            for(let n = (dataLength-2)/data[dataLength-1]; n > 0; n--) {
+                table.append(`<tr> </tr>`)
+            }
+            let tableRows = table.children();
+
             let hasValue = false;
             for(let x = 0; x < data[dataLength - 1]; x++) {
                 if(data[x].hasOwnProperty('value')) {
@@ -684,19 +710,30 @@ $("#runQuery").on('click', function() {
                         </tr>`);
                 }
             } else {
-                for(let j = 0; j < data[dataLength - 1]*3; j=j+3) {
-                    table.append(`
-                        <tr>
-                            <td style="white-space: nowrap !important;">
-                                ${Object.values(data[j])}
-                            </td>
-                            <td style="white-space: nowrap !important;">
-                                ${Object.values(data[j+1])}
-                            </td>
-                            <td style="white-space: nowrap !important;">
-                                ${Object.values(data[j+2])}
-                            </td>
-                        </tr>`);
+                let counter = 0;
+                let table1 = $('#dynamic_field tr:nth-child(1)');
+                let once = 0;
+                for(let j = 0; j <= dataLength-2; j++) {
+                    once = 0;
+                    if(j < data[dataLength-1]) {
+                        if(data[dataLength-1] % j == 0 && j!=0 && j != 1 && j!= 2) {
+                            counter++;
+                            once = 1;
+                        }
+                    } else {
+                        if(j % data[dataLength-1] == 0 && j!=0) {
+                            counter++;
+                            once = 1;
+                        }
+                    }
+                    if(once == 1) {
+    
+                        table1 = $('#dynamic_field tr:nth-child('+(counter+1)+')');
+                    }
+                    table1.append(`
+                                <td style="white-space: nowrap !important;">
+                                    ${Object.values(data[j])}
+                                </td>`)
                 }
             }
             let newArray = Object.entries(data);
@@ -716,8 +753,8 @@ $('#execute').on('click', function() {
     var coll1 = $("#collection").children("option:selected").val();
     var joinType = $("#jointype").children("option:selected").val();
     var joinTable = $("#jointable").children("option:selected").val();
-    var joinField = $("#joinfield").children("option:selected").val();
-    console.log(joinType, joinTable, joinField);
+    // var joinField = $("#joinfield").children("option:selected").val();
+    // console.log(joinType, joinTable, joinField);
 
     $.ajax({
         url: "../Server/join.php",
@@ -731,11 +768,11 @@ $('#execute').on('click', function() {
         },
         success: function(encodedData) {
             var data = JSON.parse(encodedData);
-            console.log(data);
+            // console.log(data);
             var table = $('#dynamic_field');
             table.empty();
             var length = data.length;
-            console.log(data.length)
+            // console.log(data.length)
             for (var i = 0; i < length - 1; i++) {
                 // console.log(data[i])
                 if(data[i].collection) {
