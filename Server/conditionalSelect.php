@@ -4,8 +4,8 @@ require '../vendor/autoload.php';
 
 $db = $_POST['db'];
 $coll = $_POST['coll'];
-// $db = 'db3';
-// $coll = 'artistsNonUniqueIndex';
+// $db = 'db4';
+// $coll = 'orderFK';
 
 $selectOperator = $_POST['selectOperator'];
 $selConditionField = $_POST['selConditionField'];
@@ -15,7 +15,7 @@ $selConditionFieldSecondary = $_POST['selConditionFieldSecondary'];
 // $selectOperator = '*';
 // $selConditionField = '_id';
 // $selConditionOperator = '=';
-// $selConditionFieldSecondary = '19';
+// $selConditionFieldSecondary = '2';
 
 
 // we have to look inside catalog to check how many attribute tags we have
@@ -37,7 +37,7 @@ $tags = $node->getElementsByTagName('DataBase'); //access databases
 $i = 0;
 $isIndexColl = 0;
 $attrNames = [];
-if(str_contains($coll, 'Index') !== false) {
+if(str_contains($coll, 'Index') !== false || str_contains($coll, 'FK') !== false) {
     $attrNames[0] = '_id';
     $attrNames[1] = 'value';
     $isIndexColl = 1;
@@ -68,7 +68,7 @@ $isId = 0;
 if (preg_match('~[0-9]+~', $selConditionFieldSecondary)) {
     // we are searching by a numeric id
     $isId = 1;
-} elseif (preg_match('~[A-Z]+~', $selConditionFieldSecondary && $selConditionField == '_id')) {
+} elseif (preg_match('~[A-Z]+~', $selConditionFieldSecondary) && $selConditionField == '_id') {
     // we are searching by a string in id
     $isId = 2;
 }
@@ -118,7 +118,7 @@ foreach ( $cursor as $id => $value )
 $newArr = [];
 $newArr = array_chunk($result1, count($attrNames));
 
-
+// if user wants only specific attr
 $found = [];
 foreach($newArr as $el => $val) {
     for($x = 0; $x < count($attrNames); $x++) {
@@ -130,21 +130,61 @@ foreach($newArr as $el => $val) {
     }
 
 }
+// var_dump($found);
 
 // last position is empty because id does not contain # so we delete the last record
 // array_pop($split);
 
-
-$result1[count($result1)] = $execution_mills;
-$result1[count($result1)] = count($attrNames);
-
-$found[count($found)] = $execution_mills;
-$found[count($found)] = count($attrNames);
-
-if($isId == 0) {
-    echo json_encode($found);
+if(isset($selectOperator) && !empty($selectOperator)) {
+    if($selectOperator == '*') {
+        if($isIndexColl == 0) {
+            $found[count($found)] = $execution_mills;
+            $found[count($found)] = count($attrNames);
+            
+            echo json_encode($found);
+        } else {
+            $result1[count($result1)] = $execution_mills;
+            $result1[count($result1)] = count($attrNames);
+    
+            echo json_encode($result1);
+        }
+    } else {
+        // user selected specific field
+        $found1 = [];
+        $result1 = [];
+        if($isId != 0) {
+            foreach($found as $prop => $val) {
+                if(isset($val->$selectOperator)) {
+                    $found1[0] = $val;
+                }
+            }
+            $found1[count($found1)] = $execution_mills;
+            $found1[count($found1)] = count($attrNames);
+            
+            echo json_encode($found1);
+        } else {
+            $result1[count($result1)] = $execution_mills;
+            $result1[count($result1)] = count($attrNames);
+    
+            echo json_encode($result1);
+        }
+        
+        
+    }
 } else {
-    echo json_encode($result1);
-} 
+    if($isId == 0) {
+        $found[count($found)] = $execution_mills;
+        $found[count($found)] = count($attrNames);
+        
+        echo json_encode($found);
+    } else {
+        $result1[count($result1)] = $execution_mills;
+        $result1[count($result1)] = count($attrNames);
+
+        echo json_encode($result1);
+    }
+}
+
+ 
 
 ?>

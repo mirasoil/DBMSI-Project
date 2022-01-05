@@ -25,10 +25,12 @@ $tags = $node->getElementsByTagName('DataBase'); //access databases
 
 
 $i = 0;
+$isIndexColl = 0;
 $attrNames = [];
-if(str_contains($coll, 'Index') !== false) {
+if(str_contains($coll, 'Index') !== false || str_contains($coll, 'FK') !== false) {
     $attrNames[0] = '_id';
     $attrNames[1] = 'value';
+    $isIndexColl = 1;
 } else {
     foreach($tags as $tag)
     {
@@ -43,15 +45,6 @@ if(str_contains($coll, 'Index') !== false) {
         }  
     }
 }
-// echo $i;
-// echo '<br>';
-// var_dump($attrNames);
-// echo '<br>';
-// var_dump($attrNames[0]);
-// echo '<br>';
-// var_dump($attrNames[1]);
-// echo '<br>';
-// echo(count($attrNames));
 
 
 $connection = new MongoClient();
@@ -71,14 +64,19 @@ foreach ( $cursor as $id => $value )
     // echo "$id: ";
     // var_dump( $value );
     $result[$i] = $value;
-    // if(strpos($value['value']) !== false ) {}
-    $split = explode("#", $value['value']);
-    // on the first position is id
-    array_unshift($split, $result[$i]['_id']);
-    for($j = 0; $j < count($attrNames); $j++) {
-        array_push($result1, (object)[$attrNames[$j] => $split[$j]]); 
+    if($isIndexColl == 0) {
+        $split = explode("#", $value['value']);
+        // on the first position is id
+        array_unshift($split, $result[$i]['_id']);
+        for($j = 0; $j < count($attrNames); $j++) {
+            array_push($result1, (object)[$attrNames[$j] => $split[$j]]); 
+        }
+        $i++;
+    } else {
+        array_push($result1, (object)[$attrNames[0] => $result[$i]['_id']]); 
+        array_push($result1, (object)[$attrNames[1] => $value['value']]); 
+        $i++;
     }
-    $i++;
 }
 
 // last position is empty because id does not contain # so we delete the last record

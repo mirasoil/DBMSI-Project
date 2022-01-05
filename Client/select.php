@@ -413,7 +413,12 @@
     <button class="btn btn-primary" id="execute">Execute</button>
     <div class="clearfix"></div>
 </div>
-
+<div class="pull-left" style="margin: 3px;">
+    &nbsp;
+</div>
+<div style="margin-top: 15%; float: right; width: auto; margin-right: 20px;">
+    <button class="btn btn-primary btn-lg" onclick="window.location.href='index.php'">Back</button>
+</div>
 </body>
 <script>
 $(document).ready(function() {
@@ -691,12 +696,17 @@ $("#runQuery").on('click', function() {
             let tableRows = table.children();
 
             let hasValue = false;
-            for(let x = 0; x < data[dataLength - 1]; x++) {
-                if(data[x].hasOwnProperty('value')) {
-                    hasValue = true;
-                    break;
+            if(dataLength != 3) {
+                for(let x = 0; x < data[dataLength - 1]; x++) {
+                    if(data[x].hasOwnProperty('value')) {
+                        hasValue = true;
+                        break;
+                    }
                 }
+            } else {
+                hasValue = false;
             }
+            
             if(hasValue) {
                 for(let j = 0; j < data[dataLength-1]*2; j=j+2) {
                     table.append(`
