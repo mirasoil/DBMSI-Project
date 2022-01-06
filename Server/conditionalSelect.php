@@ -5,17 +5,17 @@ require '../vendor/autoload.php';
 $db = $_POST['db'];
 $coll = $_POST['coll'];
 // $db = 'db4';
-// $coll = 'orderFK';
+// $coll = 'customer';
 
 $selectOperator = $_POST['selectOperator'];
 $selConditionField = $_POST['selConditionField'];
 $selConditionOperator = $_POST['selConditionOperator'];
 $selConditionFieldSecondary = $_POST['selConditionFieldSecondary'];
 
-// $selectOperator = '*';
-// $selConditionField = '_id';
+// $selectOperator = 'custLastName';
+// $selConditionField = 'custFirstName';
 // $selConditionOperator = '=';
-// $selConditionFieldSecondary = '2';
+// $selConditionFieldSecondary = 'Simona';
 
 
 // we have to look inside catalog to check how many attribute tags we have
@@ -71,6 +71,9 @@ if (preg_match('~[0-9]+~', $selConditionFieldSecondary)) {
 } elseif (preg_match('~[A-Z]+~', $selConditionFieldSecondary) && $selConditionField == '_id') {
     // we are searching by a string in id
     $isId = 2;
+} elseif (preg_match('~[A-Z]+~', $selConditionFieldSecondary) && $selConditionField != '_id') {
+    // we are searching by something else than the id
+    $isId = 3;
 }
 
 if($isId == 1 && $isIndexColl == 0) {
@@ -79,7 +82,7 @@ if($isId == 1 && $isIndexColl == 0) {
     $cursor = $collection->find(array('_id' => (string)$selConditionFieldSecondary));
 } elseif ($isId == 2) {
     $cursor = $collection->find(array('_id' => $selConditionFieldSecondary));
-} elseif ($isId == 0) {
+} elseif ($isId == 0 || $isId == 3) {
     $cursor = $collection->find();
 }
 
@@ -171,19 +174,7 @@ if(isset($selectOperator) && !empty($selectOperator)) {
         
         
     }
-} else {
-    if($isId == 0) {
-        $found[count($found)] = $execution_mills;
-        $found[count($found)] = count($attrNames);
-        
-        echo json_encode($found);
-    } else {
-        $result1[count($result1)] = $execution_mills;
-        $result1[count($result1)] = count($attrNames);
-
-        echo json_encode($result1);
-    }
-}
+} 
 
  
 

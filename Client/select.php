@@ -519,54 +519,33 @@ $("#collection").on('change', function() {
             for(let n = (dataLength-2)/data[dataLength-1]; n > 0; n--) {
                 table.append(`<tr> </tr>`)
             }
-            let tableRows = table.children();
-
-            let hasValue = false;
-            for(let x = 0; x < data[dataLength - 1]; x++) {
-                if(data[x].hasOwnProperty('value')) {
-                    hasValue = true;
-                    break;
+            
+            let counter = 0;
+            let table1 = $('#dynamic_field tr:nth-child(1)');
+            let once = 0;
+            for(let j = 0; j <= dataLength-2; j++) {
+                once = 0;
+                if(j < data[dataLength-1]) {
+                    if(data[dataLength-1] % j == 0 && j!=0 && j != 1 && j!= 2) {
+                        counter++;
+                        once = 1;
+                    }
+                } else {
+                    if(j % data[dataLength-1] == 0 && j!=0) {
+                        counter++;
+                        once = 1;
+                    }
                 }
-            }
-            if(hasValue) {
-                for(let j = 0; j < data[dataLength-1]*2; j=j+2) {
-                    table.append(`
-                        <tr>
+                if(once == 1) {
+
+                    table1 = $('#dynamic_field tr:nth-child('+(counter+1)+')');
+                }
+                table1.append(`
                             <td style="white-space: nowrap !important;">
                                 ${Object.values(data[j])}
-                            </td>
-                            <td style="white-space: nowrap !important;">
-                                ${Object.values(data[j+1])}
-                            </td>
-                        </tr>`);
-                }
-            } else {
-                let counter = 0;
-                let table1 = $('#dynamic_field tr:nth-child(1)');
-                let once = 0;
-                for(let j = 0; j <= dataLength-2; j++) {
-                    once = 0;
-                    if(j < data[dataLength-1]) {
-                        if(data[dataLength-1] % j == 0 && j!=0 && j != 1 && j!= 2) {
-                            counter++;
-                            once = 1;
-                        }
-                    } else {
-                        if(j % data[dataLength-1] == 0 && j!=0) {
-                            counter++;
-                            once = 1;
-                        }
-                    }
-                    if(once == 1) {
-    
-                        table1 = $('#dynamic_field tr:nth-child('+(counter+1)+')');
-                    }
-                    table1.append(`
-                                <td style="white-space: nowrap !important;">
-                                    ${Object.values(data[j])}
-                                </td>`)
-                }
+                            </td>`)
             }
+            
             let newArray = Object.entries(data);
             $('#queryTableName').html(selectedColl);
             $('#infoRecords').html(`Showing ${dataLength-2} of ${dataLength-2} results`);
@@ -693,58 +672,30 @@ $("#runQuery").on('click', function() {
             for(let n = (dataLength-2)/data[dataLength-1]; n > 0; n--) {
                 table.append(`<tr> </tr>`)
             }
-            let tableRows = table.children();
-
-            let hasValue = false;
-            if(dataLength != 3) {
-                for(let x = 0; x < data[dataLength - 1]; x++) {
-                    if(data[x].hasOwnProperty('value')) {
-                        hasValue = true;
-                        break;
+            let counter = 0;
+            let table1 = $('#dynamic_field tr:nth-child(1)');
+            let once = 0;
+            for(let j = 0; j <= dataLength-2; j++) {
+                once = 0;
+                if(j < data[dataLength-1]) {
+                    if(data[dataLength-1] % j == 0 && j!=0 && j != 1 && j!= 2) {
+                        counter++;
+                        once = 1;
+                    }
+                } else {
+                    if(j % data[dataLength-1] == 0 && j!=0) {
+                        counter++;
+                        once = 1;
                     }
                 }
-            } else {
-                hasValue = false;
-            }
-            
-            if(hasValue) {
-                for(let j = 0; j < data[dataLength-1]*2; j=j+2) {
-                    table.append(`
-                        <tr>
+                if(once == 1) {
+
+                    table1 = $('#dynamic_field tr:nth-child('+(counter+1)+')');
+                }
+                table1.append(`
                             <td style="white-space: nowrap !important;">
                                 ${Object.values(data[j])}
-                            </td>
-                            <td style="white-space: nowrap !important;">
-                                ${Object.values(data[j+1])}
-                            </td>
-                        </tr>`);
-                }
-            } else {
-                let counter = 0;
-                let table1 = $('#dynamic_field tr:nth-child(1)');
-                let once = 0;
-                for(let j = 0; j <= dataLength-2; j++) {
-                    once = 0;
-                    if(j < data[dataLength-1]) {
-                        if(data[dataLength-1] % j == 0 && j!=0 && j != 1 && j!= 2) {
-                            counter++;
-                            once = 1;
-                        }
-                    } else {
-                        if(j % data[dataLength-1] == 0 && j!=0) {
-                            counter++;
-                            once = 1;
-                        }
-                    }
-                    if(once == 1) {
-    
-                        table1 = $('#dynamic_field tr:nth-child('+(counter+1)+')');
-                    }
-                    table1.append(`
-                                <td style="white-space: nowrap !important;">
-                                    ${Object.values(data[j])}
-                                </td>`)
-                }
+                            </td>`)
             }
             let newArray = Object.entries(data);
             $('#queryTableName').html(selectedColl);
