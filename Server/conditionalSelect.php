@@ -13,8 +13,8 @@ $selConditionOperator = $_POST['selConditionOperator'];
 $selConditionFieldSecondary = $_POST['selConditionFieldSecondary'];
 
 // $selectOperator = 'custLastName';
-// $selConditionField = 'custID';
-// $selConditionOperator = '=';
+// $selConditionField = 'orderID';
+// $selConditionOperator = '<=';
 // $selConditionFieldSecondary = '5';
 
 // we have to look inside catalog to check how many attribute tags we have
@@ -88,6 +88,7 @@ if(str_contains($coll, 'Index') !== false || str_contains($coll, 'FK') !== false
     }
 }
 
+
 // if unique or non unique keys exist we then search in the right collections in mongo
 if(!empty($uniqueKey) && str_contains($coll, 'Unique') === false) {
     // search in the Unique collection
@@ -128,7 +129,17 @@ if (preg_match('~[0-9]+~', $selConditionFieldSecondary)) {
 
 
 if($idType == 'int' && str_contains($newColl, 'FK') === false) {
-    $cursor = $collection->find(array('_id' => intval($selConditionFieldSecondary)));
+    if($selConditionOperator == '=') {
+        $cursor = $collection->find(array('_id' => intval($selConditionFieldSecondary)));
+    } elseif($selConditionOperator == '>=') {
+        $cursor = $collection->find(array('_id' => array('$gte' => intval($selConditionFieldSecondary)) ));
+    } elseif($selConditionOperator == '<=') {
+        $cursor = $collection->find(array('_id' => array('$lte' => intval($selConditionFieldSecondary)) ));
+    } elseif($selConditionOperator == '>') {
+        $cursor = $collection->find(array('_id' => array('$gt' => intval($selConditionFieldSecondary)) ));
+    } elseif($selConditionOperator == '<') {
+        $cursor = $collection->find(array('_id' => array('$lt' => intval($selConditionFieldSecondary)) ));
+    }
 } elseif ($idType == 'int' && str_contains($newColl, 'FK')) {
     // in FK collection _id field is a number as string 
     $cursor = $collection->find(array('_id' => (string)$selConditionFieldSecondary));
@@ -148,6 +159,7 @@ $result = [];
 $split = null;
 $result1 = [];
 $arrOfIndexes = [];
+$data = [];
 $i = 0;
 $info = '';
 
@@ -189,6 +201,18 @@ foreach ($cursor as $id => $value) {
         $arrOfIndexes[1] = $value['value']; 
         $i++;
         $info = 'found-in-Unique';
+    } else {
+        // for conditions using <=, >=, <, >
+        $split = explode("#", $value['value']);
+        // first position is id
+        array_unshift($split, $result[$i]['_id']);
+
+        for($j = 0; $j < count($split)-1; $j++) {
+            // $data[$j] = $split[$j]; 
+            array_push($data, (object)[$attrNames[$j] => $split[$j]]);
+        }
+        $i++;
+        $info = 'found-elsewhere';
     }
 }
 
@@ -197,6 +221,8 @@ $x = 0;
 $resultFK = [];
 $resultNonUnique = [];
 $resultUniqueIndex = [];
+$resultElsewhere = [];
+
 if($info == 'found-in-FK') {
     if(str_contains($newColl, 'FK') === true) {
         // get the referenced table from xml
@@ -362,6 +388,15 @@ if($info == 'found-in-FK') {
     
     
     echo json_encode($resultUniqueIndex);
+
+}  elseif($info == 'found-elsewhere') {
+    // we search all the indexes in the right table and return the data
+    $resultElsewhere = $data;
+    $resultElsewhere[count($resultElsewhere)] = $execution_mills;
+    $resultElsewhere[count($resultElsewhere)] = count($attrNames);
+    
+    
+    echo json_encode($resultElsewhere);
 
 }
 

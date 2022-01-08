@@ -3,3 +3,4 @@ Catalog.xml
 *.json
 *.lock
 .env
+/Server/experiment.php
