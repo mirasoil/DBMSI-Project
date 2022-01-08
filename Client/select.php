@@ -646,62 +646,66 @@ $("#runQuery").on('click', function() {
             selConditionFieldSecondary: selConditionFieldSecondary
         },
         success: function(encodedData) {
-            var data = JSON.parse(encodedData);
-            // console.log(data);
-
-            var tableHead = $('#tableHead');
-            tableHead.empty();
-
-            var table = $('#dynamic_field');
-            table.empty();
-
-            var dataLength = Object.keys(data).length;
-
-            for(var i = 0; i < data[dataLength - 1]; i++) {
-                for(let prop in data[i]) {
-                    tableHead.append(`
-                        <th 
-                            style="padding-top: 0px; padding-bottom: 0px; border-top-width: 0px; border-bottom-width: 0px; height: 0px; width: 10.5px;">
-                            ${prop}
-                        </th>`);
-                }
+            if(encodedData == ""){
+                alert("No data was found!");
+            } else {
+                var data = JSON.parse(encodedData);
+                // console.log(data);
                 
-            } 
-            // for each group of data from response append tr, last two attributes are execution time and number of attr
-
-            for(let n = (dataLength-2)/data[dataLength-1]; n > 0; n--) {
-                table.append(`<tr> </tr>`)
-            }
-            let counter = 0;
-            let table1 = $('#dynamic_field tr:nth-child(1)');
-            let once = 0;
-            for(let j = 0; j <= dataLength-2; j++) {
-                once = 0;
-                if(j < data[dataLength-1]) {
-                    if(data[dataLength-1] % j == 0 && j!=0 && j != 1 && j!= 2) {
-                        counter++;
-                        once = 1;
+                var tableHead = $('#tableHead');
+                tableHead.empty();
+    
+                var table = $('#dynamic_field');
+                table.empty();
+    
+                var dataLength = Object.keys(data).length;
+    
+                for(var i = 0; i < data[dataLength - 1]; i++) {
+                    for(let prop in data[i]) {
+                        tableHead.append(`
+                            <th 
+                                style="padding-top: 0px; padding-bottom: 0px; border-top-width: 0px; border-bottom-width: 0px; height: 0px; width: 10.5px;">
+                                ${prop}
+                            </th>`);
                     }
-                } else {
-                    if(j % data[dataLength-1] == 0 && j!=0) {
-                        counter++;
-                        once = 1;
+                    
+                } 
+                // for each group of data from response append tr, last two attributes are execution time and number of attr
+    
+                for(let n = (dataLength-2)/data[dataLength-1]; n > 0; n--) {
+                    table.append(`<tr> </tr>`)
+                }
+                let counter = 0;
+                let table1 = $('#dynamic_field tr:nth-child(1)');
+                let once = 0;
+                for(let j = 0; j <= dataLength-2; j++) {
+                    once = 0;
+                    if(j < data[dataLength-1]) {
+                        if(data[dataLength-1] % j == 0 && j!=0 && j != 1 && j!= 2) {
+                            counter++;
+                            once = 1;
+                        }
+                    } else {
+                        if(j % data[dataLength-1] == 0 && j!=0) {
+                            counter++;
+                            once = 1;
+                        }
                     }
+                    if(once == 1) {
+    
+                        table1 = $('#dynamic_field tr:nth-child('+(counter+1)+')');
+                    }
+                    table1.append(`
+                                <td style="white-space: nowrap !important;">
+                                    ${Object.values(data[j])}
+                                </td>`)
                 }
-                if(once == 1) {
-
-                    table1 = $('#dynamic_field tr:nth-child('+(counter+1)+')');
-                }
-                table1.append(`
-                            <td style="white-space: nowrap !important;">
-                                ${Object.values(data[j])}
-                            </td>`)
+                let newArray = Object.entries(data);
+                $('#queryTableName').html(selectedColl);
+                $('#infoRecords').html(`Showing ${dataLength-2} of ${dataLength-2} results`);
+                $('.timetaken').html(`Time Taken: <strong> ${data[dataLength-2]} </strong> second(s)!`);
+                $('#querySelectedColl').html(selectedColl);
             }
-            let newArray = Object.entries(data);
-            $('#queryTableName').html(selectedColl);
-            $('#infoRecords').html(`Showing ${dataLength-2} of ${dataLength-2} results`);
-            $('.timetaken').html(`Time Taken: <strong> ${data[dataLength-2]} </strong> second(s)!`);
-            $('#querySelectedColl').html(selectedColl);
         }
     });
 });

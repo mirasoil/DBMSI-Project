@@ -5,7 +5,7 @@ require '../vendor/autoload.php';
 $db = $_POST['db'];
 $coll = $_POST['coll'];
 // $db = 'db4';
-// $coll = 'customer';
+// $coll = 'order';
 
 $selectOperator = $_POST['selectOperator'];
 $selConditionField = $_POST['selConditionField'];
@@ -13,9 +13,9 @@ $selConditionOperator = $_POST['selConditionOperator'];
 $selConditionFieldSecondary = $_POST['selConditionFieldSecondary'];
 
 // $selectOperator = 'custLastName';
-// $selConditionField = 'custLastName';
+// $selConditionField = 'custID';
 // $selConditionOperator = '=';
-// $selConditionFieldSecondary = 'Vasile';
+// $selConditionFieldSecondary = '5';
 
 // we have to look inside catalog to check how many attribute tags we have
 $xmldoc = new DomDocument();
@@ -169,12 +169,17 @@ foreach ($cursor as $id => $value) {
         $i++;
         $info = 'found-in-FK';
     } elseif (str_contains($newColl, 'NonUnique') !== false) {
-        $split = explode("#", $value['value']);
-        // first position is id
-        array_unshift($split, $result[$i]['_id']);
-
-        for($j = 1; $j < count($split)-1; $j++) {
-            $arrOfIndexes[$j-1] = $split[$j]; 
+        if(preg_match('~[0-9]+~', $value['value']) && str_contains($value['value'], '#') === false) {
+            // if the value from the non unique collection is only one id
+            $arrOfIndexes[0] = $result[0]['value'];
+        } else {
+            $split = explode("#", $value['value']);
+            // first position is id
+            array_unshift($split, $result[$i]['_id']);
+    
+            for($j = 1; $j < count($split)-1; $j++) {
+                $arrOfIndexes[$j-1] = $split[$j]; 
+            }
         }
         $i++;
         $info = 'found-in-NonUnique';
@@ -195,14 +200,10 @@ $resultUniqueIndex = [];
 if($info == 'found-in-FK') {
     if(str_contains($newColl, 'FK') === true) {
         // get the referenced table from xml
-        $coll = str_replace('FK', '', $newColl);
+        $newColl = str_replace('FK', '', $newColl);
         foreach($tags as $tag) {
             $dbName = $tag->getAttribute("dataBaseName");
             if($dbName == $db){
-                // get the referenced table name if that exists
-                if ($xpath->query('/Databases/DataBase[@dataBaseName=\''.$dbName.'\']/Tables/Table[@tableName=\''.$coll.'\']/foreignKeys/foreignKey/references/refTable')->count()) {
-                    $newColl = $xpath->query('/Databases/DataBase[@dataBaseName=\''.$dbName.'\']/Tables/Table[@tableName=\''.$coll.'\']/foreignKeys/foreignKey/references/refTable')->item(0)->textContent;
-                } 
 
                 // from the new table store all the attributes names in array
                 $newTags = $xpath->query('/Databases/DataBase[@dataBaseName=\''.$dbName.'\']/Tables/Table[@tableName=\''.$newColl.'\']/Structure/Attribute');
@@ -232,6 +233,7 @@ if($info == 'found-in-FK') {
 
             $split = explode("#", $value['value']);
             // first position is id
+            array_push($resultFK, (object)[$newAttrNames[0] => $id]);
             array_unshift($split, $result[$i]['_id']);
 
             for($j = 1; $j < count($split)-1; $j++) {
@@ -263,31 +265,55 @@ if($info == 'found-in-FK') {
     }
 
     // we search all the indexes in the right table and return the data
-    for($i = 0; $i < count($arrOfIndexes); $i++) {
+    if(count($arrOfIndexes) == 1) {
         $conn = new MongoClient();
-
+    
         $m = new MongoClient();
         $db1 = $m->selectDB($db);
         $coll = new MongoCollection($db1, $newColl);
 
-        $cursor = $coll->find(array('_id' => intval($arrOfIndexes[$i])));
+        $cursor = $coll->find(array('_id' => intval($arrOfIndexes[0])));
 
         foreach ($cursor as $id => $value) {
-            // echo "$id: ";
-            // var_dump( $value );
+            // var_dump($value);
             $result[$i] = $value;
 
             $split = explode("#", $value['value']);
             // first position is id
+            array_push($resultNonUnique, (object)[$newAttrNames[0] => $id]);
             array_unshift($split, $result[$i]['_id']);
 
-            for($j = 1; $j < count($split)-1; $j++) {
+            for($j = 1; $j < count($newAttrNames); $j++) {
                 array_push($resultNonUnique, (object)[$newAttrNames[$j] => $split[$j]]);
+            }
+        }
+    } else {
+        for($i = 0; $i < count($arrOfIndexes); $i++) {
+            $conn = new MongoClient();
+    
+            $m = new MongoClient();
+            $db1 = $m->selectDB($db);
+            $coll = new MongoCollection($db1, $newColl);
+    
+            $cursor = $coll->find(array('_id' => intval($arrOfIndexes[$i])));
+    
+            foreach ($cursor as $id => $value) {
+                // var_dump($value);
+                $result[$i] = $value;
+    
+                $split = explode("#", $value['value']);
+                // first position is id
+                array_push($resultNonUnique, (object)[$newAttrNames[0] => $id]);
+                array_unshift($split, $result[$i]['_id']);
+    
+                for($j = 1; $j < count($newAttrNames); $j++) {
+                    array_push($resultNonUnique, (object)[$newAttrNames[$j] => $split[$j]]);
+                }
             }
         }
     }
     $resultNonUnique[count($resultNonUnique)] = $execution_mills;
-    $resultNonUnique[count($resultNonUnique)] = count($newAttrNames-1);
+    $resultNonUnique[count($resultNonUnique)] = count($newAttrNames);
     
     
     echo json_encode($resultNonUnique);
@@ -309,30 +335,28 @@ if($info == 'found-in-FK') {
         }
     }
     // we search all the indexes in the right table and return the data
-    // for($i = 0; $i < count($arrOfIndexes); $i++) {
-        $conn = new MongoClient();
+    $conn = new MongoClient();
 
-        $m = new MongoClient();
-        $db1 = $m->selectDB($db);
-        $coll = new MongoCollection($db1, $newColl);
+    $m = new MongoClient();
+    $db1 = $m->selectDB($db);
+    $coll = new MongoCollection($db1, $newColl);
 
-        $cursor = $coll->find(array('_id' => intval($arrOfIndexes[1])));
+    $cursor = $coll->find(array('_id' => intval($arrOfIndexes[1])));
 
-        foreach ($cursor as $id => $value) {
-            // echo "$id: ";
-            // var_dump( $value );
-            $result = $value;
+    foreach ($cursor as $id => $value) {
+        // echo "$id: ";
+        // var_dump( $value );
+        $result = $value;
 
-            $split = explode("#", $value['value']);
-            // first position is id
-            array_unshift($resultUniqueIndex, (object)[$newAttrNames[0] => $arrOfIndexes[1]]);
-            array_unshift($split, $arrOfIndexes[1]);
+        $split = explode("#", $value['value']);
+        // first position is id
+        array_unshift($resultUniqueIndex, (object)[$newAttrNames[0] => $arrOfIndexes[1]]);
+        array_unshift($split, $arrOfIndexes[1]);
 
-            for($j = 1; $j < count($split)-1; $j++) {
-                array_push($resultUniqueIndex, (object)[$newAttrNames[$j] => $split[$j]]);
-            }
+        for($j = 1; $j < count($split)-1; $j++) {
+            array_push($resultUniqueIndex, (object)[$newAttrNames[$j] => $split[$j]]);
         }
-    // }
+    }
     $resultUniqueIndex[count($resultUniqueIndex)] = $execution_mills;
     $resultUniqueIndex[count($resultUniqueIndex)] = count($newAttrNames);
     
