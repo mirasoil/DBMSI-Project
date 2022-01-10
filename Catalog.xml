@@ -1,0 +1,235 @@
+<?xml version="1.0"?>
+<Databases>
+    <DataBase dataBaseName="db5">
+        <Tables>
+            <Table rowLength="114" fileName="fileName" tableName="customer">
+                <Structure>
+                    <Attribute isnull="0" length="3" type="integer" attributeName="custID"/>
+                    <Attribute isnull="0" length="50" type="varchar" attributeName="custFirstName"/>
+                    <Attribute isnull="0" length="50" type="varchar" attributeName="custLastName"/>
+                    <Attribute isnull="0" length="3" type="integer" attributeName="age"/>
+                </Structure>
+                <primaryKey>
+                    <pkAttribute>custID</pkAttribute>
+                </primaryKey>
+                <uniqueKeys>
+                    <UniqueAttribute>custFirstName</UniqueAttribute>
+                </uniqueKeys>
+                <nonUniqueKeys>
+                    <NonUniqueAttribute>custLastName</NonUniqueAttribute>
+                </nonUniqueKeys>
+            </Table>
+            <Table rowLength="114" fileName="fileName" tableName="order">
+                <Structure>
+                    <Attribute isnull="0" length="3" type="integer" attributeName="orderID"/>
+                    <Attribute isnull="0" length="50" type="varchar" attributeName="orderName"/>
+                    <Attribute isnull="0" length="3" type="integer" attributeName="custID"/>
+                    <Attribute isnull="0" length="50" type="varchar" attributeName="orderAddress"/>
+                </Structure>
+                <primaryKey>
+                    <pkAttribute>orderID</pkAttribute>
+                </primaryKey>
+                <foreignKeys>
+                    <foreignKey>
+                        <fkAttribute>custID</fkAttribute>
+                        <references>
+                            <refTable>customer</refTable>
+                            <refAttribute>custID</refAttribute>
+                        </references>
+                    </foreignKey>
+                </foreignKeys>
+                <uniqueKeys>
+                    <UniqueAttribute>orderName</UniqueAttribute>
+                </uniqueKeys>
+            </Table>
+        </Tables>
+    </DataBase>
+    <DataBase dataBaseName="db4">
+        <Tables>
+            <Table rowLength="114" fileName="fileName" tableName="customer">
+                <Structure>
+                    <Attribute isnull="0" length="3" type="integer" attributeName="custID"/>
+                    <Attribute isnull="0" length="50" type="varchar" attributeName="custFirstName"/>
+                    <Attribute isnull="0" length="50" type="varchar" attributeName="custLastName"/>
+                    <Attribute isnull="0" length="3" type="integer" attributeName="years"/>
+                </Structure>
+                <primaryKey>
+                    <pkAttribute>custID</pkAttribute>
+                </primaryKey>
+                <uniqueKeys>
+                    <UniqueAttribute>custFirstName</UniqueAttribute>
+                </uniqueKeys>
+                <nonUniqueKeys>
+                    <NonUniqueAttribute>custLastName</NonUniqueAttribute>
+                </nonUniqueKeys>
+            </Table>
+            <Table rowLength="114" fileName="fileName" tableName="order">
+                <Structure>
+                    <Attribute isnull="0" length="3" type="integer" attributeName="orderID"/>
+                    <Attribute isnull="0" length="50" type="varchar" attributeName="orderName"/>
+                    <Attribute isnull="0" length="3" type="integer" attributeName="custID"/>
+                    <Attribute isnull="0" length="50" type="varchar" attributeName="orderAddress"/>
+                </Structure>
+                <primaryKey>
+                    <pkAttribute>orderID</pkAttribute>
+                </primaryKey>
+                <foreignKeys>
+                    <foreignKey>
+                        <fkAttribute>custID</fkAttribute>
+                        <references>
+                            <refTable>customer</refTable>
+                            <refAttribute>custID</refAttribute>
+                        </references>
+                    </foreignKey>
+                </foreignKeys>
+                <uniqueKeys>
+                    <UniqueAttribute>orderName</UniqueAttribute>
+                </uniqueKeys>
+            </Table>
+        </Tables>
+    </DataBase>
+    <DataBase dataBaseName="db7">
+        <Tables>
+            <Table rowLength="114" fileName="fileName" tableName="customer">
+                <Structure>
+                    <Attribute isnull="0" length="3" type="integer" attributeName="customerID"/>
+                    <Attribute isnull="0" length="20" type="varchar" attributeName="firstName"/>
+                    <Attribute isnull="0" length="20" type="varchar" attributeName="lastName"/>
+                </Structure>
+                <primaryKey>
+                    <pkAttribute>customerID</pkAttribute>
+                </primaryKey>
+                <uniqueKeys>
+                    <UniqueAttribute>firstName</UniqueAttribute>
+                </uniqueKeys>
+            </Table>
+            <Table rowLength="114" fileName="fileName" tableName="order">
+                <Structure>
+                    <Attribute isnull="0" length="3" type="integer" attributeName="orderID"/>
+                    <Attribute isnull="0" length="20" type="varchar" attributeName="orderName"/>
+                    <Attribute isnull="0" length="3" type="integer" attributeName="customerID"/>
+                </Structure>
+                <primaryKey>
+                    <pkAttribute>orderID</pkAttribute>
+                </primaryKey>
+                <foreignKeys>
+                    <foreignKey>
+                        <fkAttribute>customerID</fkAttribute>
+                        <references>
+                            <refTable>customer</refTable>
+                            <refAttribute>customerID</refAttribute>
+                        </references>
+                    </foreignKey>
+                </foreignKeys>
+                <uniqueKeys>
+                    <UniqueAttribute>orderName</UniqueAttribute>
+                </uniqueKeys>
+            </Table>
+            <Table rowLength="114" fileName="fileName" tableName="orders">
+                <Structure>
+                    <Attribute isnull="0" length="3" type="integer" attributeName="ojoij"/>
+                    <Attribute isnull="0" length="20" type="varchar" attributeName="vfdvfd"/>
+                    <Attribute isnull="0" length="3" type="integer" attributeName="fdvfdv"/>
+                </Structure>
+                <primaryKey>
+                    <pkAttribute>ojoij</pkAttribute>
+                </primaryKey>
+                <foreignKeys>
+                    <foreignKey>
+                        <fkAttribute>fdvfdv</fkAttribute>
+                        <references>
+                            <refTable>customer</refTable>
+                            <refAttribute>customerID</refAttribute>
+                        </references>
+                    </foreignKey>
+                </foreignKeys>
+                <uniqueKeys>
+                    <UniqueAttribute>vfdvfd</UniqueAttribute>
+                </uniqueKeys>
+            </Table>
+        </Tables>
+    </DataBase>
+    <DataBase dataBaseName="db3">
+        <Tables>
+            <Table rowLength="114" fileName="fileName" tableName="songs">
+                <Structure>
+                    <Attribute isnull="0" length="3" type="integer" attributeName="SongID"/>
+                    <Attribute isnull="0" length="50" type="varchar" attributeName="SongName"/>
+                    <Attribute isnull="0" length="20" type="varchar" attributeName="Artist"/>
+                </Structure>
+                <primaryKey>
+                    <pkAttribute>SongID</pkAttribute>
+                </primaryKey>
+                <foreignKeys>
+                    <foreignKey>
+                        <fkAttribute>Artist</fkAttribute>
+                        <references>
+                            <refTable>artists</refTable>
+                            <refAttribute>ArtistID</refAttribute>
+                        </references>
+                    </foreignKey>
+                </foreignKeys>
+                <uniqueKeys>
+                    <UniqueAttribute>SongName</UniqueAttribute>
+                </uniqueKeys>
+            </Table>
+            <Table rowLength="114" fileName="fileName" tableName="artists">
+                <Structure>
+                    <Attribute isnull="0" length="3" type="integer" attributeName="ArtistID"/>
+                    <Attribute isnull="0" length="50" type="varchar" attributeName="ArtistName"/>
+                    <Attribute isnull="0" length="20" type="varchar" attributeName="Song"/>
+                </Structure>
+                <primaryKey>
+                    <pkAttribute>ArtistID</pkAttribute>
+                </primaryKey>
+                <uniqueKeys>
+                    <UniqueAttribute>ArtistName</UniqueAttribute>
+                </uniqueKeys>
+            </Table>
+        </Tables>
+    </DataBase>
+    <DataBase dataBaseName="db2">
+        <Tables>
+            <Table rowLength="114" fileName="fileName" tableName="students">
+                <Structure>
+                    <Attribute isnull="0" length="3" type="integer" attributeName="StudentID"/>
+                    <Attribute isnull="0" length="20" type="varchar" attributeName="FirstName"/>
+                    <Attribute isnull="0" length="20" type="varchar" attributeName="LastName"/>
+                </Structure>
+                <primaryKey>
+                    <pkAttribute>StudentID</pkAttribute>
+                </primaryKey>
+            </Table>
+            <Table rowLength="114" fileName="fileName" tableName="courses">
+                <Structure>
+                    <Attribute isnull="0" length="3" type="integer" attributeName="CourseID"/>
+                    <Attribute isnull="0" length="20" type="varchar" attributeName="CourseName"/>
+                    <Attribute isnull="0" length="3" type="integer" attributeName="Teacher"/>
+                </Structure>
+                <primaryKey>
+                    <pkAttribute>CourseID</pkAttribute>
+                </primaryKey>
+            </Table>
+            <Table rowLength="114" fileName="fileName" tableName="grades">
+                <Structure>
+                    <Attribute isnull="0" length="3" type="integer" attributeName="GradeID"/>
+                    <Attribute isnull="0" length="3" type="integer" attributeName="Grade"/>
+                    <Attribute isnull="0" length="3" type="integer" attributeName="CourseID"/>
+                </Structure>
+                <primaryKey>
+                    <pkAttribute>GradeID</pkAttribute>
+                </primaryKey>
+                <foreignKeys>
+                    <foreignKey>
+                        <fkAttribute>CourseID</fkAttribute>
+                        <references>
+                            <refTable>courses</refTable>
+                            <refAttribute>CourseID</refAttribute>
+                        </references>
+                    </foreignKey>
+                </foreignKeys>
+            </Table>
+        </Tables>
+    </DataBase>
+    <DataBase dataBaseName="db1"/>
+</Databases>

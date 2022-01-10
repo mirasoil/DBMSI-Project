@@ -320,6 +320,11 @@
                         </div>
                     </div>
 
+                    <button type="button" id="add-and-operator" class="btn btn-success">
+                        Add AND
+                    </button>
+                    
+
                 </div>
 
                 <div class="modal-footer">
@@ -627,6 +632,10 @@ $("#runQuery").on('click', function() {
 
     var selectedColl = collectionModal;
 
+    var selANDConditionField = $('#selANDConditionField').val();
+    var selANDConditionOperator = $('#selANDConditionOperator').children("option:selected").val();
+    var selANDConditionFieldSecondary = $('#selANDConditionFieldSecondary').val();
+
     // console.log('selectedDB '+selectedDB);
     // console.log('selectOperator '+selectOperator);
     // console.log('collectionModal '+collectionModal);
@@ -643,7 +652,10 @@ $("#runQuery").on('click', function() {
             selectOperator: selectOperator,
             selConditionField: selConditionField,
             selConditionOperator: selConditionOperator,
-            selConditionFieldSecondary: selConditionFieldSecondary
+            selConditionFieldSecondary: selConditionFieldSecondary,
+            selANDConditionField: [selANDConditionField],
+            selANDConditionOperator: [selANDConditionOperator],
+            selANDConditionFieldSecondary: [selANDConditionFieldSecondary]
         },
         success: function(encodedData) {
             if(encodedData == ""){
@@ -710,6 +722,50 @@ $("#runQuery").on('click', function() {
     });
 });
 
+
+// dynamically add fields in the custom query section
+// allowed maximum input fields
+var max_input = 10;
+
+// initialize the counter for textbox
+var x = 1;
+
+// handle click event on Add More button
+$('#add-and-operator').click(function (e) {
+  e.preventDefault();
+  if (x < max_input) { // validate the condition
+    x++; // increment the counter
+        $(`<div id="for-remove"><div class="form-group">
+            <br />
+            WHERE
+            <label for="selANDConditionField">Enter your condition</label>
+            <input type="text" name="selANDConditionField[]" id="selANDConditionField" style="width: 230px; margin-right: 20px;" class="form-control">
+        </div>
+        <div class="form-group">
+            <br />
+            <select name="selANDConditionOperator[]" id="selANDConditionOperator" class="form-control" style="width: 230px; margin-right: 20px;">
+                <option value="=">=</option>
+                <option value="<"><</option>
+                <option value="<="><=</option>
+                <option value=">">></option>
+                <option value=">=">>=</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <br />
+            <label for="selConditionFieldSecondary">Enter your condition</label>
+            <input type="text" name="selANDConditionFieldSecondary[]" id="selANDConditionFieldSecondary" style="width: 230px; margin-right: 20px;" class="form-control">
+        </div><br />
+        <a href="#" class="remove-lnk">Remove</a></div>`).insertAfter($('#add-and-operator'))
+  }
+  // handle click event of the remove link
+  $(".remove-lnk").on("click", function (e) {
+    e.preventDefault();
+    $(this).parent('div').remove();
+    x--; // decrement the counter
+  });
+
+});
 
 
 //JOIN - execute the join

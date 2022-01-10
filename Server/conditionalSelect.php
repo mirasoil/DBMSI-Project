@@ -17,6 +17,16 @@ $selConditionFieldSecondary = $_POST['selConditionFieldSecondary'];
 // $selConditionOperator = '<=';
 // $selConditionFieldSecondary = '5';
 
+if (isset($_POST["selANDConditionField"]) && is_array($_POST["selANDConditionField"])) {
+    $selANDConditionField = $_POST['selANDConditionField'];
+    $selANDConditionOperator = $_POST['selANDConditionOperator'];
+    $selANDConditionFieldSecondary = $_POST['selANDConditionFieldSecondary'];
+}
+
+// $selANDConditionField = ['custID'];
+// $selANDConditionOperator = ['='];
+// $selANDConditionFieldSecondary = ['3'];
+
 // we have to look inside catalog to check how many attribute tags we have
 $xmldoc = new DomDocument();
 
@@ -203,16 +213,62 @@ foreach ($cursor as $id => $value) {
         $info = 'found-in-Unique';
     } else {
         // for conditions using <=, >=, <, >
-        $split = explode("#", $value['value']);
-        // first position is id
-        array_unshift($split, $result[$i]['_id']);
+        $changedArr = [];
+        $m = 0;
+        $index = 0;
+        if (isset($_POST["selANDConditionField"]) && is_array($_POST["selANDConditionField"])) {
+            $split = explode("#", $value['value']);
+            // first position is id
+            array_unshift($split, $result[$i]['_id']);
+    
+            for($j = 0; $j < count($split)-1; $j++) {
+                // $data[$j] = $split[$j]; 
+                array_push($data, (object)[$attrNames[$j] => $split[$j]]);
+            }
+            $i++;
+            $info = 'found-elsewhere';
+            
+            for($n = 0; $n < count($data); $n++) {
+                foreach(array_values($data)[$n] as $key => $value) {
+                    for($r = 0; $r < count($selANDConditionField); $r++) {
+                        if($key == $selANDConditionField[$r] && $value == $selANDConditionFieldSecondary[$r]){
+                            for($t =0; $t < count($attrNames); $t++){
+                                if($attrNames[$t] == $selANDConditionField[$r]) {
+                                    $index = $t;
+                                }
+                            }
+                            if($index == 0) {
+                                $m = $n;
+                            } elseif($index == 1) {
+                                $m = $n - 1;
+                            } elseif($index == 2) {
+                                $m = $n - 2;
+                            } elseif($index == 3) {
+                                $m = $n - 3;
+                            }
+                        }
+                    }
+                }
+            }
+            $changedArr[] = $data[$m];
+            $changedArr[] = $data[$m+1];
+            $changedArr[] = $data[$m+2];
+            $changedArr[] = $data[$m+3];
 
-        for($j = 0; $j < count($split)-1; $j++) {
-            // $data[$j] = $split[$j]; 
-            array_push($data, (object)[$attrNames[$j] => $split[$j]]);
+            $data = $changedArr;
+
+        } else {
+            $split = explode("#", $value['value']);
+            // first position is id
+            array_unshift($split, $result[$i]['_id']);
+    
+            for($j = 0; $j < count($split)-1; $j++) {
+                // $data[$j] = $split[$j]; 
+                array_push($data, (object)[$attrNames[$j] => $split[$j]]);
+            }
+            $i++;
+            $info = 'found-elsewhere';
         }
-        $i++;
-        $info = 'found-elsewhere';
     }
 }
 
