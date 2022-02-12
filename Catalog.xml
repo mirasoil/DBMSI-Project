@@ -44,6 +44,41 @@
             </Table>
         </Tables>
     </DataBase>
+    <DataBase dataBaseName="db5NoIndex">
+        <Tables>
+            <Table rowLength="114" fileName="fileName" tableName="customer">
+                <Structure>
+                    <Attribute isnull="0" length="3" type="integer" attributeName="custID"/>
+                    <Attribute isnull="0" length="50" type="varchar" attributeName="custFirstName"/>
+                    <Attribute isnull="0" length="50" type="varchar" attributeName="custLastName"/>
+                    <Attribute isnull="0" length="3" type="integer" attributeName="age"/>
+                </Structure>
+                <primaryKey>
+                    <pkAttribute>custID</pkAttribute>
+                </primaryKey>
+            </Table>
+            <Table rowLength="114" fileName="fileName" tableName="order">
+                <Structure>
+                    <Attribute isnull="0" length="3" type="integer" attributeName="orderID"/>
+                    <Attribute isnull="0" length="50" type="varchar" attributeName="orderName"/>
+                    <Attribute isnull="0" length="3" type="integer" attributeName="custID"/>
+                    <Attribute isnull="0" length="50" type="varchar" attributeName="orderAddress"/>
+                </Structure>
+                <primaryKey>
+                    <pkAttribute>orderID</pkAttribute>
+                </primaryKey>
+                <foreignKeys>
+                    <foreignKey>
+                        <fkAttribute>custID</fkAttribute>
+                        <references>
+                            <refTable>customer</refTable>
+                            <refAttribute>custID</refAttribute>
+                        </references>
+                    </foreignKey>
+                </foreignKeys>
+            </Table>
+        </Tables>
+    </DataBase>
     <DataBase dataBaseName="db4">
         <Tables>
             <Table rowLength="114" fileName="fileName" tableName="customer">
@@ -52,6 +87,50 @@
                     <Attribute isnull="0" length="50" type="varchar" attributeName="custFirstName"/>
                     <Attribute isnull="0" length="50" type="varchar" attributeName="custLastName"/>
                     <Attribute isnull="0" length="3" type="integer" attributeName="years"/>
+                </Structure>
+                <primaryKey>
+                    <pkAttribute>custID</pkAttribute>
+                </primaryKey>
+                <uniqueKeys>
+                    <UniqueAttribute>custFirstName</UniqueAttribute>
+                </uniqueKeys>
+                <nonUniqueKeys>
+                    <NonUniqueAttribute>custLastName</NonUniqueAttribute>
+                </nonUniqueKeys>
+            </Table>
+            <Table rowLength="114" fileName="fileName" tableName="order">
+                <Structure>
+                    <Attribute isnull="0" length="3" type="integer" attributeName="orderID"/>
+                    <Attribute isnull="0" length="50" type="varchar" attributeName="orderName"/>
+                    <Attribute isnull="0" length="3" type="integer" attributeName="custID"/>
+                    <Attribute isnull="0" length="50" type="varchar" attributeName="orderAddress"/>
+                </Structure>
+                <primaryKey>
+                    <pkAttribute>orderID</pkAttribute>
+                </primaryKey>
+                <foreignKeys>
+                    <foreignKey>
+                        <fkAttribute>custID</fkAttribute>
+                        <references>
+                            <refTable>customer</refTable>
+                            <refAttribute>custID</refAttribute>
+                        </references>
+                    </foreignKey>
+                </foreignKeys>
+                <uniqueKeys>
+                    <UniqueAttribute>orderName</UniqueAttribute>
+                </uniqueKeys>
+            </Table>
+        </Tables>
+    </DataBase>
+    <DataBase dataBaseName="dbTEST">
+        <Tables>
+            <Table rowLength="114" fileName="fileName" tableName="customer">
+                <Structure>
+                    <Attribute isnull="0" length="3" type="integer" attributeName="custID"/>
+                    <Attribute isnull="0" length="50" type="varchar" attributeName="custFirstName"/>
+                    <Attribute isnull="0" length="50" type="varchar" attributeName="custLastName"/>
+                    <Attribute isnull="0" length="3" type="integer" attributeName="age"/>
                 </Structure>
                 <primaryKey>
                     <pkAttribute>custID</pkAttribute>

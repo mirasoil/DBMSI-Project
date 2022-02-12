@@ -3,8 +3,8 @@
 require '../vendor/autoload.php';
 
 $m = new MongoClient();
-// $dbName = $_POST['db'];
-$dbName = 'db4';
+$dbName = $_POST['db'];
+// $dbName = 'db4';
 $db = $m->selectDB($dbName);
 $collections = $db->getCollectionNames();
 

@@ -4,3 +4,6 @@
 *.lock
 .env
 /Server/experiment.php
+info.txt
+/Server/conditionalSelect1.php
+Catalog.txt

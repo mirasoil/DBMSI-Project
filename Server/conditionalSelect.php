@@ -4,7 +4,7 @@ require '../vendor/autoload.php';
 
 $db = $_POST['db'];
 $coll = $_POST['coll'];
-// $db = 'db4';
+// $db = 'db5';
 // $coll = 'order';
 
 $selectOperator = $_POST['selectOperator'];
@@ -12,20 +12,16 @@ $selConditionField = $_POST['selConditionField'];
 $selConditionOperator = $_POST['selConditionOperator'];
 $selConditionFieldSecondary = $_POST['selConditionFieldSecondary'];
 
-// $selectOperator = 'custLastName';
-// $selConditionField = 'orderID';
-// $selConditionOperator = '<=';
-// $selConditionFieldSecondary = '5';
+// $selectOperator = 'orderName';
+// $selConditionField = 'orderAddress';
+// $selConditionOperator = '=';
+// $selConditionFieldSecondary = 'Cluj';
 
 if (isset($_POST["selANDConditionField"]) && is_array($_POST["selANDConditionField"])) {
     $selANDConditionField = $_POST['selANDConditionField'];
     $selANDConditionOperator = $_POST['selANDConditionOperator'];
     $selANDConditionFieldSecondary = $_POST['selANDConditionFieldSecondary'];
 }
-
-// $selANDConditionField = ['custID'];
-// $selANDConditionOperator = ['='];
-// $selANDConditionFieldSecondary = ['3'];
 
 // we have to look inside catalog to check how many attribute tags we have
 $xmldoc = new DomDocument();
@@ -123,7 +119,9 @@ $collection = new MongoCollection($db1, $newColl);
 
 // verify if the condition value contains a number (id) or a string
 $idType = '';
-if (preg_match('~[0-9]+~', $selConditionFieldSecondary)) {
+if (preg_match('/[A-Za-z]/', $selConditionFieldSecondary) && preg_match('/[0-9]/', $selConditionFieldSecondary)){
+    $idType = 'string';
+} elseif (preg_match('~[0-9]+~', $selConditionFieldSecondary) && str_contains($selConditionField, 'ID') !== false) {
     // we are searching by a numeric id
     $idType = 'int';
 } elseif (preg_match('~[A-Z]+~', $selConditionFieldSecondary) && $selConditionField == '_id') {
@@ -134,6 +132,9 @@ if (preg_match('~[0-9]+~', $selConditionFieldSecondary)) {
     $idType = 'not-an-id';
 } elseif (preg_match('~[A-Z]+~', $selConditionFieldSecondary) && str_contains($newColl, 'Unique') !== false) {
     // we are searching by a string in an unique or non-unique coll
+    $idType = 'string';
+} elseif (preg_match('~[0-9]+~', $selConditionFieldSecondary) && str_contains($selConditionField, 'age')) {
+    // searching by age - no unique or non unique index, age is int
     $idType = 'string';
 }
 
@@ -153,8 +154,10 @@ if($idType == 'int' && str_contains($newColl, 'FK') === false) {
 } elseif ($idType == 'int' && str_contains($newColl, 'FK')) {
     // in FK collection _id field is a number as string 
     $cursor = $collection->find(array('_id' => (string)$selConditionFieldSecondary));
-} elseif ($idType == 'string') {
+} elseif ($idType == 'string' && $selConditionField !== 'age') {
     $cursor = $collection->find(array('_id' => $selConditionFieldSecondary));
+} elseif ($idType == 'string' && $selConditionField === 'age') {
+    $cursor = $collection->find();
 } elseif ($idType == '' || $idType == 'not-an-id') {
     $cursor = $collection->find();
 }
@@ -211,6 +214,43 @@ foreach ($cursor as $id => $value) {
         $arrOfIndexes[1] = $value['value']; 
         $i++;
         $info = 'found-in-Unique';
+    } elseif ($selConditionField == "orderAddress") {
+        // we need the third value from the value field
+        $obj = (object)[];
+        $split = explode("#", $value['value']);
+        // first position is id
+        array_unshift($split, $result[$i]['_id']);
+
+        for($j = 1; $j < count($split)-1; $j++) {
+            if ($split[$j] == $selConditionFieldSecondary) {
+                array_push($arrOfIndexes, (object)['id' => $split[$j-3]]);
+                array_push($arrOfIndexes, (object)['orderName' => $split[$j-2]]);
+                array_push($arrOfIndexes, (object)['custID' => $split[$j-1]]);
+                array_push($arrOfIndexes, (object)['orderAddress' => $split[$j]]);
+            }
+        }
+
+        $i++;
+        $info = 'is-orderAddress';
+    } elseif($selConditionField == "age") {
+        // we need the forth value from the value field
+        $obj = (object)[];
+        $split = explode("#", $value['value']);
+        // first position is id
+        array_unshift($split, $result[$i]['_id']);
+
+        $ind = 0;
+        for($j = 1; $j < count($split)-1; $j++) {
+            if ($split[$j] == $selConditionFieldSecondary) {
+                array_push($arrOfIndexes, (object)['custID' => $split[$j-3]]);
+                array_push($arrOfIndexes, (object)['custFirstName' => $split[$j-2]]);
+                array_push($arrOfIndexes, (object)['custLastName' => $split[$j-1]]);
+                array_push($arrOfIndexes, (object)['age' => $split[$j]]);
+            }
+        }
+
+        $i++;
+        $info = 'is-age';
     } else {
         // for conditions using <=, >=, <, >
         $changedArr = [];
@@ -250,10 +290,15 @@ foreach ($cursor as $id => $value) {
                     }
                 }
             }
-            $changedArr[] = $data[$m];
-            $changedArr[] = $data[$m+1];
-            $changedArr[] = $data[$m+2];
-            $changedArr[] = $data[$m+3];
+            // $changedArr[] = $data[$m];
+            // $changedArr[] = $data[$m+1];
+            // $changedArr[] = $data[$m+2];
+            // $changedArr[] = $data[$m+3];
+
+            array_push($changedArr, $data[$m]);
+            array_push($changedArr, $data[$m+1]);
+            array_push($changedArr, $data[$m+2]);
+            array_push($changedArr, $data[$m+3]);
 
             $data = $changedArr;
 
@@ -261,13 +306,13 @@ foreach ($cursor as $id => $value) {
             $split = explode("#", $value['value']);
             // first position is id
             array_unshift($split, $result[$i]['_id']);
-    
             for($j = 0; $j < count($split)-1; $j++) {
                 // $data[$j] = $split[$j]; 
                 array_push($data, (object)[$attrNames[$j] => $split[$j]]);
             }
             $i++;
             $info = 'found-elsewhere';
+
         }
     }
 }
@@ -278,6 +323,8 @@ $resultFK = [];
 $resultNonUnique = [];
 $resultUniqueIndex = [];
 $resultElsewhere = [];
+$resultOrderAddress = [];
+$resultAge = [];
 
 if($info == 'found-in-FK') {
     if(str_contains($newColl, 'FK') === true) {
@@ -454,5 +501,19 @@ if($info == 'found-in-FK') {
     
     echo json_encode($resultElsewhere);
 
+} elseif ($info == 'is-orderAddress') {
+    $resultOrderAddress = $arrOfIndexes;
+    $resultOrderAddress[count($resultOrderAddress)] = $execution_mills;
+    $resultOrderAddress[count($resultOrderAddress)] = count($attrNames);
+    echo json_encode($resultOrderAddress);
+} elseif ($info == 'is-age') {
+    $resultAge = $arrOfIndexes;
+
+    // we have to kep only the corresponding data
+    $resultAge[count($resultAge)] = $execution_mills;
+    $resultAge[count($resultAge)] = count($attrNames);
+
+    echo json_encode($resultAge);
 }
+
 
