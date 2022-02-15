@@ -175,11 +175,9 @@ $arrOfIndexes = [];
 $data = [];
 $i = 0;
 $info = '';
+$newIndexes = [];
 
 foreach ($cursor as $id => $value) {
-    // echo "id: ".$id;
-    // echo '<br>';
-    // var_dump( $value );
     $result[$i] = $value;
 
     // if collection is FK we need all the values for that id to look for them in the other collection
@@ -251,6 +249,21 @@ foreach ($cursor as $id => $value) {
 
         $i++;
         $info = 'is-age';
+    } elseif ($db == 'db5NoIndex') {
+        $split = explode("#", $value['value']);
+        // first position is id
+        array_unshift($split, $id);
+
+        for($t = 0; $t < count($split)-1; $t++) {
+
+            if($split[$t] == $selConditionFieldSecondary) {
+                // store the indexes for those whose last name is the one we want
+                array_push($newIndexes, $split[$t-2]);
+            }
+        }
+
+        $i++;
+        $info = 'found-in-db5NoIndex';
     } else {
         // for conditions using <=, >=, <, >
         $changedArr = [];
@@ -262,7 +275,6 @@ foreach ($cursor as $id => $value) {
             array_unshift($split, $result[$i]['_id']);
     
             for($j = 0; $j < count($split)-1; $j++) {
-                // $data[$j] = $split[$j]; 
                 array_push($data, (object)[$attrNames[$j] => $split[$j]]);
             }
             $i++;
@@ -290,10 +302,6 @@ foreach ($cursor as $id => $value) {
                     }
                 }
             }
-            // $changedArr[] = $data[$m];
-            // $changedArr[] = $data[$m+1];
-            // $changedArr[] = $data[$m+2];
-            // $changedArr[] = $data[$m+3];
 
             array_push($changedArr, $data[$m]);
             array_push($changedArr, $data[$m+1]);
@@ -307,7 +315,6 @@ foreach ($cursor as $id => $value) {
             // first position is id
             array_unshift($split, $result[$i]['_id']);
             for($j = 0; $j < count($split)-1; $j++) {
-                // $data[$j] = $split[$j]; 
                 array_push($data, (object)[$attrNames[$j] => $split[$j]]);
             }
             $i++;
@@ -325,6 +332,8 @@ $resultUniqueIndex = [];
 $resultElsewhere = [];
 $resultOrderAddress = [];
 $resultAge = [];
+$resultDB5NoIndex = [];
+$responseFinalData = [];
 
 if($info == 'found-in-FK') {
     if(str_contains($newColl, 'FK') === true) {
@@ -356,8 +365,6 @@ if($info == 'found-in-FK') {
         $cursor = $coll->find(array('_id' => intval($arrOfIndexes[$i])));
 
         foreach ($cursor as $id => $value) {
-            // echo "$id: ";
-            // var_dump( $value );
             $result[$i] = $value;
 
             $split = explode("#", $value['value']);
@@ -404,7 +411,6 @@ if($info == 'found-in-FK') {
         $cursor = $coll->find(array('_id' => intval($arrOfIndexes[0])));
 
         foreach ($cursor as $id => $value) {
-            // var_dump($value);
             $result[$i] = $value;
 
             $split = explode("#", $value['value']);
@@ -514,6 +520,37 @@ if($info == 'found-in-FK') {
     $resultAge[count($resultAge)] = count($attrNames);
 
     echo json_encode($resultAge);
+} elseif ($info == 'found-in-db5NoIndex') {
+    $newAttrNames = ["custID", "custFirstName", "custLastName", "age"];
+    
+    for($s = 0; $s < count($newIndexes); $s++) {
+        $m5NoIndex = new MongoClient();
+        $db5NoIndex = $m5NoIndex->selectDB($db);
+        $coll5NoIndex = new MongoCollection($db5NoIndex, $newColl);
+
+        $cursor5NoIndex = $coll5NoIndex->find(array('_id' => intval($newIndexes[$s])));
+
+        foreach ($cursor5NoIndex as $id => $value) {
+            $result[$i] = $value;
+
+            $split = explode("#", $value['value']);
+            // first position is id
+            array_unshift($split, $result[$i]['_id']);
+
+            for($j = 0; $j < count($split)-1; $j++) {
+                array_push($responseFinalData, (object)[$newAttrNames[$j] => $split[$j]]);
+
+            }
+        }
+
+    }
+
+    // we have to kep only the corresponding data
+    $responseFinalData[count($responseFinalData)] = $execution_mills;
+    $responseFinalData[count($responseFinalData)] = count($attrNames);
+
+    echo json_encode($responseFinalData);
 }
+
 
 
